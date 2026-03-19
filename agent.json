@@ -2,7 +2,7 @@
   "id": "stockexpert-1",
   "name": "股票专家",
   "description": "专业AI助手，专注于A股公告追踪、全球股市分析和交易复盘。提供数据驱动的投资决策参考。",
-  "model": "easyclaw/claude.sonnet-4.6",
+  "model": "{YOUR_PROVIDER}/claude.sonnet-4.6",
   "os": [],
   "skills": [
     "stock-announcement-fetcher",

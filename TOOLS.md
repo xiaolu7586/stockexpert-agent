@@ -5,7 +5,7 @@
 ### Platform
 - **OS**: Windows 10/11
 - **Shell**: PowerShell (default)
-- **Python**: 3.11.9 (managed by EasyClaw)
+- **Python**: 3.11.9 (managed by your claw platform)
 - **Package Manager**: uv (Python package runner)
 
 ### Critical Constraints
