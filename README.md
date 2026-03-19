@@ -25,7 +25,7 @@ Copy-Item -Recurse stockexpert-agent "$env:USERPROFILE\.{your-claw-platform}\wor
 ### Step 3：将 agent 配置写入平台配置文件
 
 打开你的 claw 平台配置文件（通常是 `~/.{platform}/{platform}.json`），在 `agents.list` 数组中追加以下内容，并：
-- 将 `{YOUR_PROVIDER}` 替换为你的平台模型提供商前缀（如 `claude`、`anthropic` 等）
+- 将 `{YOUR_MODEL_ID}` 替换为你的平台对应的模型 ID（如 `claude-sonnet-4-6`、`anthropic/claude-3-5-sonnet-20241022` 等）
 - 将 `workspace` 路径改为实际路径
 
 ```json
@@ -33,7 +33,7 @@ Copy-Item -Recurse stockexpert-agent "$env:USERPROFILE\.{your-claw-platform}\wor
   "id": "stockexpert-1",
   "name": "股票专家",
   "description": "专业AI助手，专注于A股公告追踪、全球股市分析和交易复盘。提供数据驱动的投资决策参考。",
-  "model": "{YOUR_PROVIDER}/claude.sonnet-4.6",
+  "model": "{YOUR_MODEL_ID}",
   "workspace": "/YOUR_HOME/.{your-claw-platform}/workspace-stockexpert-1",
   "skills": [
     "stock-announcement-fetcher",
