@@ -1,223 +1,218 @@
-# 质量评分体系
+# Quality Scoring System
 
-## 评分概览
+## Overview
 
-8维度加权评分系统，每维度0-100分，综合评分为加权平均。
+8-dimension weighted scoring system. Each dimension scores 0–100; the composite score is the weighted average.
 
-| 维度 | 权重 | 说明 |
-|------|------|------|
-| 入场质量 | 18% | 评估入场时机和技术指标配合度 |
-| 出场质量 | 17% | 评估止盈止损执行和出场时机 |
-| 趋势把握 | 14% | 评估顺势/逆势交易及趋势强度 |
-| 风险管理 | 12% | 评估R:R比率、MAE/MFE控制 |
-| 市场环境 | 11% | 评估入场时市场状态适配度 |
-| 交易行为 | 11% | 评估纪律性、冲动交易检测 |
-| 新闻契合 | 7% | 评估交易与新闻背景一致性 |
-| 执行质量 | 5% | 评估滑点、成交效率 |
-| 期权评分 | 5% | 仅期权：Greeks、DTE、Moneyness |
+| Dimension | Weight | What it evaluates |
+|-----------|--------|------------------|
+| Entry quality | 18% | Entry timing and technical indicator alignment |
+| Exit quality | 17% | Take-profit and stop-loss execution |
+| Trend alignment | 14% | Trading with or against trend; trend strength |
+| Risk management | 12% | R:R ratio, MAE/MFE control |
+| Market context | 11% | Market condition fit at time of entry |
+| Trading behavior | 11% | Discipline, impulse trading detection |
+| News fit | 7% | Consistency with news/event backdrop |
+| Execution quality | 5% | Slippage, fill efficiency |
+| Options scoring | 5% | Options only: Greeks, DTE, Moneyness |
 
-## 评分等级
+## Grade Scale
 
-| 分数范围 | 等级 | 说明 |
-|----------|------|------|
-| 90-100 | A | 优秀 - 各维度表现出色 |
-| 80-89 | B | 良好 - 整体表现不错 |
-| 70-79 | C | 一般 - 有改进空间 |
-| 60-69 | D | 较差 - 需要调整策略 |
-| 0-59 | F | 很差 - 存在严重问题 |
+| Score | Grade | Meaning |
+|-------|-------|---------|
+| 90–100 | A | Excellent — strong across all dimensions |
+| 80–89 | B | Good — solid overall performance |
+| 70–79 | C | Average — room for improvement |
+| 60–69 | D | Below average — strategy adjustment needed |
+| 0–59 | F | Poor — significant issues identified |
 
 ---
 
-## 入场质量评分 (18%)
+## Entry Quality (18%)
 
-评估入场时机是否合理。
+Evaluates whether the entry timing was sound.
 
-### 评估因素
+### Scoring Factors
 
-| 因素 | 权重 | 说明 |
-|------|------|------|
-| 技术指标配合 | 40% | RSI、MACD、布林带等是否支持入场方向 |
-| 支撑阻力位置 | 30% | 是否在关键价位入场 |
-| 成交量确认 | 20% | 是否有放量确认 |
-| 市场环境 | 10% | 大盘状态是否有利 |
+| Factor | Weight | Description |
+|--------|--------|-------------|
+| Technical indicator alignment | 40% | RSI, MACD, Bollinger Bands supporting entry direction |
+| Support/resistance positioning | 30% | Entry near a key price level |
+| Volume confirmation | 20% | Above-average volume confirming the move |
+| Market context | 10% | Broad market condition favorable |
 
-### 技术指标评分细则
+### Technical Indicator Detail
 
-**RSI (相对强弱指数)**
-- 做多：RSI < 30 得 95 分，30-40 得 80 分，40-50 得 65 分
-- 做空：RSI > 70 得 95 分，60-70 得 80 分，50-60 得 65 分
-- 超买买入/超卖卖出：扣 30-50 分
+**RSI (Relative Strength Index)**
+- Long entry: RSI < 30 → 95 pts · 30–40 → 80 pts · 40–50 → 65 pts
+- Short entry: RSI > 70 → 95 pts · 60–70 → 80 pts · 50–60 → 65 pts
+- Buying overbought / selling oversold: −30 to −50 pts
 
 **MACD**
-- 金叉做多/死叉做空：+20 分
-- 背离确认：+15 分
-- 柱状图方向一致：+10 分
+- Golden cross (long) / death cross (short): +20 pts
+- Divergence confirmation: +15 pts
+- Histogram direction aligned with trade: +10 pts
 
-**布林带**
-- 突破下轨做多/上轨做空：+15 分
-- 在轨道外入场：-10 分
-
----
-
-## 出场质量评分 (17%)
-
-评估出场时机和止盈止损执行。
-
-### 评估因素
-
-| 因素 | 权重 | 说明 |
-|------|------|------|
-| 止盈执行 | 30% | 是否在目标位出场 |
-| 止损纪律 | 30% | 是否及时止损 |
-| 出场时机 | 20% | 是否抓住最佳出场点 |
-| 持仓管理 | 20% | 持仓时间是否合理 |
-
-### 评分细则
-
-**盈亏百分比**
-- 盈利 > 5%：+20 分
-- 盈利 2-5%：+10 分
-- 盈利 0-2%：+5 分
-- 亏损 0-2%：-5 分
-- 亏损 2-5%：-10 分
-- 亏损 > 5%：-20 分
-
-**止损控制**
-- 亏损 < 2%：止损执行良好
-- 亏损 2-5%：止损基本到位
-- 亏损 > 10%：止损失败，严重扣分
+**Bollinger Bands**
+- Entry near lower band (long) / upper band (short): +15 pts
+- Entry outside bands: −10 pts
 
 ---
 
-## 趋势把握评分 (14%)
+## Exit Quality (17%)
 
-评估是否顺势交易。
+Evaluates take-profit and stop-loss execution.
 
-### 评估因素
+### Scoring Factors
 
-| 因素 | 权重 | 说明 |
-|------|------|------|
-| 方向一致性 | 40% | 交易方向与趋势是否一致 |
-| 趋势强度 | 30% | ADX 趋势强度 |
-| 动量配合 | 30% | MACD、RSI 动量方向 |
+| Factor | Weight | Description |
+|--------|--------|-------------|
+| Take-profit execution | 30% | Exiting near or at target level |
+| Stop-loss discipline | 30% | Cutting losses promptly |
+| Exit timing | 20% | Capturing the optimal exit point |
+| Position management | 20% | Appropriate holding duration |
 
-### ADX评分
+### P&L Scoring Detail
 
-| ADX值 | 趋势强度 | 评分调整 |
-|-------|----------|----------|
-| > 40 | 极强趋势 | +15 |
-| 25-40 | 强趋势 | +10 |
-| 20-25 | 中等趋势 | +5 |
-| < 20 | 弱趋势/震荡 | -5 |
+| P&L % | Score adjustment |
+|--------|-----------------|
+| Profit > 5% | +20 |
+| Profit 2–5% | +10 |
+| Profit 0–2% | +5 |
+| Loss 0–2% | −5 |
+| Loss 2–5% | −10 |
+| Loss > 5% | −20 |
+
+**Stop-loss control:**
+- Loss < 2%: stop-loss executed well
+- Loss 2–5%: acceptable
+- Loss > 10%: stop-loss failure, significant penalty
 
 ---
 
-## 风险管理评分 (12%)
+## Trend Alignment (14%)
 
-评估风险控制能力。
+Evaluates whether the trade direction matched the prevailing trend.
 
-### 评估因素
+### Scoring Factors
 
-| 因素 | 权重 | 说明 |
-|------|------|------|
-| R:R 比率 | 40% | 风险回报比 |
-| MAE 控制 | 30% | 最大不利偏移控制 |
-| MFE 利用 | 30% | 最大有利偏移利用率 |
+| Factor | Weight | Description |
+|--------|--------|-------------|
+| Direction consistency | 40% | Trade direction aligned with trend |
+| Trend strength | 30% | ADX trend strength at entry |
+| Momentum alignment | 30% | MACD and RSI direction consistent |
 
-### R:R评分
+### ADX Score Adjustment
 
-| R:R | 评分 |
-|-----|------|
+| ADX value | Trend strength | Score adjustment |
+|-----------|---------------|-----------------|
+| > 40 | Very strong | +15 |
+| 25–40 | Strong | +10 |
+| 20–25 | Moderate | +5 |
+| < 20 | Weak / choppy | −5 |
+
+---
+
+## Risk Management (12%)
+
+Evaluates overall risk control quality.
+
+### Scoring Factors
+
+| Factor | Weight | Description |
+|--------|--------|-------------|
+| R:R ratio | 40% | Risk-to-reward ratio |
+| MAE control | 30% | Maximum adverse excursion control |
+| MFE utilization | 30% | Maximum favorable excursion captured |
+
+### R:R Score Table
+
+| R:R | Score |
+|-----|-------|
 | > 3 | 95 |
-| 2-3 | 85 |
-| 1.5-2 | 75 |
-| 1-1.5 | 65 |
+| 2–3 | 85 |
+| 1.5–2 | 75 |
+| 1–1.5 | 65 |
 | < 1 | 50 |
 
-### 费用控制
+### Fee Impact
 
-- 费用占盈亏 < 5%：+15 分
-- 费用占盈亏 5-10%：+5 分
-- 费用占盈亏 > 20%：-15 分
-
----
-
-## 市场环境评分 (11%)
-
-评估入场时市场状态适配度。
-
-- 顺大盘方向：+10 分
-- VIX 较低时入场：+5 分
-- 避开财报/重大事件：+5 分
+| Fees as % of P&L | Score adjustment |
+|------------------|-----------------|
+| < 5% | +15 |
+| 5–10% | +5 |
+| > 20% | −15 |
 
 ---
 
-## 交易行为评分 (11%)
+## Market Context (11%)
 
-评估交易纪律和行为模式。
+Evaluates how well the entry fit the broader market environment.
 
-- 无追涨杀跌：+10 分
-- 持仓时间合理：+10 分
-- 无频繁交易：+5 分
-- 无情绪化交易：+5 分
+- Trading with the broad market direction: +10 pts
+- Low VIX environment at entry: +5 pts
+- Avoiding entries around earnings/major events: +5 pts
 
 ---
 
-## 期权专属评分 (5%)
+## Trading Behavior (11%)
 
-仅适用于期权交易。
+Evaluates discipline and behavioral patterns.
 
-### 入场评估
+- No chasing / panic selling: +10 pts
+- Appropriate holding duration: +10 pts
+- No overtrading: +5 pts
+- No emotional trading patterns: +5 pts
 
-| 维度 | 权重 | 最优条件 |
-|------|------|----------|
+---
+
+## Options Scoring (5%) — Options trades only
+
+### Entry Evaluation
+
+| Dimension | Weight | Optimal condition |
+|-----------|--------|------------------|
 | Moneyness | 25% | ATM ± 5% |
-| 趋势一致性 | 25% | Call配多头/Put配空头 |
-| 波动率环境 | 25% | IV中等 |
-| 时间价值 | 25% | DTE 30-60天 |
+| Trend alignment | 25% | Call for bullish / Put for bearish |
+| IV environment | 25% | Moderate implied volatility |
+| Time value | 25% | DTE 30–60 days |
 
-### Moneyness评分
+### Moneyness Score
 
-| Moneyness | 说明 | 评分 |
-|-----------|------|------|
-| ATM ± 2% | 平值附近 | 90 |
-| ITM 2-5% | 实值 | 80 |
-| OTM 2-5% | 虚值 | 70 |
-| OTM > 10% | 深度虚值 | 50 |
+| Moneyness | Description | Score |
+|-----------|-------------|-------|
+| ATM ± 2% | At the money | 90 |
+| ITM 2–5% | In the money | 80 |
+| OTM 2–5% | Out of the money | 70 |
+| OTM > 10% | Deep out of the money | 50 |
 
-### DTE评分
+### DTE Score
 
-| DTE | 说明 | 评分 |
-|-----|------|------|
-| 30-60天 | 理想范围 | 90 |
-| 14-30天 | 可接受 | 75 |
-| 7-14天 | 风险较高 | 60 |
-| < 7天 | Theta加速 | 40 |
-
----
-
-## 综合评分计算
-
-### 股票交易
-
-```
-综合评分 = 入场(18%) + 出场(17%) + 趋势(14%) + 风险(12%) 
-         + 市场环境(11%) + 行为(11%) + 新闻(7%) + 执行(5%) + 期权(5%)
-```
-
-### 期权交易
-
-期权交易额外计算期权专属评分，并调整权重：
-
-```
-综合评分 = 基础评分(95%) + 期权评分(5%)
-```
+| DTE | Description | Score |
+|-----|-------------|-------|
+| 30–60 days | Ideal range | 90 |
+| 14–30 days | Acceptable | 75 |
+| 7–14 days | Higher risk | 60 |
+| < 7 days | Theta accelerating | 40 |
 
 ---
 
-## 评分使用建议
+## Composite Score Calculation
 
-1. **筛选高质量交易**: 只执行评分 ≥ 70 的交易机会
-2. **复盘低分交易**: 重点分析评分 < 60 的交易，找出问题
-3. **追踪改进**: 观察平均评分趋势，持续优化交易系统
-4. **关注短板**: 找出评分最低的维度，针对性改进
+### Stocks
+```
+Score = Entry(18%) + Exit(17%) + Trend(14%) + Risk(12%)
+      + Market(11%) + Behavior(11%) + News(7%) + Execution(5%) + Options(5%)
+```
+
+### Options
+Options trades additionally compute the options-specific score and blend it in at 5%.
+
+---
+
+## How to Use Scores
+
+1. **Screen for quality setups**: Only take trades scoring ≥ 70 in your pre-trade checklist
+2. **Review low-scoring trades**: Focus post-analysis on trades below 60 to identify root causes
+3. **Track improvement**: Monitor your average score trend over time
+4. **Target weak dimensions**: Find your consistently lowest-scoring dimension and focus improvement there
