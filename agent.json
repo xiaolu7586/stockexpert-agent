@@ -1,7 +1,7 @@
 {
   "id": "stockexpert-1",
-  "name": "股票专家",
-  "description": "专业AI助手，专注于A股公告追踪、全球股市分析和交易复盘。提供数据驱动的投资决策参考。",
+  "name": "Stock Expert",
+  "description": "AI-powered stock research agent for US & A-share markets. Real-time quotes, SEC filings, A-share announcements, deep multi-dimensional analysis, and trade review.",
   "model": "{YOUR_MODEL_ID}",
   "os": [],
   "skills": [
