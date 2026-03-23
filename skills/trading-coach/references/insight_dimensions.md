@@ -1,246 +1,237 @@
-# AI洞察维度
+# AI Insight Dimensions
 
-Trading Coach 通过10个维度分析交易模式，生成可执行的改进建议。
-
-## 1. 入场分析
-
-分析入场时机和技术指标配合。
-
-### 检测规则
-
-| 模式 | 触发条件 | 类型 |
-|------|----------|------|
-| 超买追涨 | RSI > 70 时做多 | ⚠️ 警告 |
-| 超卖追空 | RSI < 30 时做空 | ⚠️ 警告 |
-| 低评分入场 | 入场评分 < 50 | ⚠️ 警告 |
-| 优秀入场 | 入场评分 ≥ 80 | ✅ 正面 |
-
-### 典型建议
-
-- 等待更明确的技术信号再入场
-- 避免在 RSI > 70 时追涨
-- 关注支撑位附近的买入机会
+Trading Coach analyzes your trades across 10 dimensions to generate actionable improvement recommendations.
 
 ---
 
-## 2. 出场分析
+## 1. Entry Analysis
 
-评估止盈止损执行。
+Analyzes entry timing and technical indicator alignment.
 
-### 检测规则
+### Detection Rules
 
-| 模式 | 触发条件 | 类型 |
-|------|----------|------|
-| 大额亏损 | 单笔亏损 > 10% | ❌ 负面 |
-| 止损失效 | 亏损超过预设止损位 | ❌ 负面 |
-| 过早止盈 | 盈利 < 2% 就平仓 | ⚠️ 警告 |
-| 及时止损 | 亏损控制在 2% 以内 | ✅ 正面 |
+| Pattern | Trigger condition | Type |
+|---------|------------------|------|
+| Buying overbought | RSI > 70 on long entry | ⚠️ Warning |
+| Selling oversold | RSI < 30 on short entry | ⚠️ Warning |
+| Low-score entry | Entry score < 50 | ⚠️ Warning |
+| Strong entry | Entry score ≥ 80 | ✅ Positive |
 
-### 典型建议
-
-- 设置止损位并严格执行
-- 单笔亏损控制在 2-5% 以内
-- 考虑使用移动止损锁定利润
-
----
-
-## 3. 风险管理
-
-分析整体风险控制。
-
-### 检测规则
-
-| 模式 | 触发条件 | 类型 |
-|------|----------|------|
-| 费用过高 | 费用占盈亏 > 20% | ⚠️ 警告 |
-| 仓位过重 | 单笔交易占比 > 10% | ⚠️ 警告 |
-| R:R不佳 | 风险回报比 < 1 | ❌ 负面 |
-| 良好控制 | 最大回撤 < 10% | ✅ 正面 |
-
-### 典型建议
-
-- 优化交易频率降低费用
-- 控制单笔仓位不超过总资金 5%
-- 确保 R:R 至少 1.5:1
+### Typical Recommendations
+- Wait for cleaner technical confirmation before entering
+- Avoid chasing when RSI > 70
+- Look for long entries near support levels
 
 ---
 
-## 4. 持仓时间
+## 2. Exit Analysis
 
-分析持仓周期合理性。
+Evaluates take-profit and stop-loss execution.
 
-### 检测规则
+### Detection Rules
 
-| 模式 | 触发条件 | 类型 |
-|------|----------|------|
-| 过短持仓 | 持仓 < 1 小时 | ⚠️ 警告 |
-| 频繁交易 | 短线交易占比 > 20% | ⚠️ 警告 |
-| 过长持仓 | 持仓 > 30 天 | ℹ️ 提示 |
+| Pattern | Trigger condition | Type |
+|---------|------------------|------|
+| Large loss | Single trade loss > 10% | ❌ Negative |
+| Stop-loss failure | Loss exceeds pre-set stop level | ❌ Negative |
+| Early profit-taking | Profit < 2% at close | ⚠️ Warning |
+| Disciplined stop-loss | Loss contained within 2% | ✅ Positive |
 
-### 典型建议
-
-- 延长持仓时间，给交易空间发展
-- 区分日内和波段交易策略
-- 设置时间止损避免资金占用
-
----
-
-## 5. 费用分析
-
-分析交易成本影响。
-
-### 检测规则
-
-| 模式 | 触发条件 | 类型 |
-|------|----------|------|
-| 费用侵蚀 | 总费用占总盈利 > 20% | ❌ 负面 |
-| 小额高频 | 单笔金额小但频繁 | ⚠️ 警告 |
-| 费用控制良好 | 费用占比 < 5% | ✅ 正面 |
-
-### 典型建议
-
-- 减少交易频率
-- 增加单笔交易规模
-- 选择费用更低的券商
+### Typical Recommendations
+- Define your stop-loss level before entering and honor it
+- Keep single-trade losses within 2–5%
+- Consider trailing stops to lock in profits
 
 ---
 
-## 6. 历史对比
+## 3. Risk Control
 
-与类似持仓对比表现。
+Analyzes overall risk management quality.
 
-### 分析内容
+### Detection Rules
 
-- 同标的历史交易对比
-- 同类型（做多/做空）对比
-- 同持仓周期对比
+| Pattern | Trigger condition | Type |
+|---------|------------------|------|
+| High fee drag | Fees > 20% of P&L | ⚠️ Warning |
+| Oversized position | Single trade > 10% of portfolio | ⚠️ Warning |
+| Poor R:R | Risk-to-reward ratio < 1 | ❌ Negative |
+| Solid control | Max drawdown < 10% | ✅ Positive |
 
-### 典型输出
+### Typical Recommendations
+- Reduce trade frequency to lower cumulative fees
+- Keep single-position size below 5% of total capital
+- Ensure R:R is at least 1.5:1 before entering
 
+---
+
+## 4. Holding Duration
+
+Analyzes whether position holding periods are appropriate.
+
+### Detection Rules
+
+| Pattern | Trigger condition | Type |
+|---------|------------------|------|
+| Very short holds | Avg holding < 1 hour | ⚠️ Warning |
+| Overtrading | Short-term trades > 20% of total | ⚠️ Warning |
+| Very long holds | Avg holding > 30 days | ℹ️ Note |
+
+### Typical Recommendations
+- Give your trades room to develop before closing
+- Separate day-trading and swing-trading strategies intentionally
+- Use time-based stops to avoid tying up capital indefinitely
+
+---
+
+## 5. Fee Drag
+
+Analyzes the impact of transaction costs on profitability.
+
+### Detection Rules
+
+| Pattern | Trigger condition | Type |
+|---------|------------------|------|
+| Fee erosion | Total fees > 20% of total profit | ❌ Negative |
+| High-frequency small trades | Frequent small-size trades | ⚠️ Warning |
+| Low fee impact | Fee ratio < 5% | ✅ Positive |
+
+### Typical Recommendations
+- Reduce trade frequency
+- Increase average position size per trade
+- Compare broker fee structures — zero-commission brokers (Robinhood, Webull) may suit your style
+
+---
+
+## 6. Historical Comparison
+
+Compares current trade performance against your own historical trades in the same ticker or category.
+
+### Analysis Areas
+- Same ticker: compare this trade to previous trades in the same stock
+- Same direction (long/short) comparison
+- Same holding duration bracket comparison
+
+### Example Output
 ```
-AAPL 历史交易:
-- 本次: -$150 (亏损)
-- 历史平均: +$200
-- 历史胜率: 65%
-差异原因: 本次入场RSI偏高
+AAPL trade history:
+- This trade: −$150 (loss)
+- Your historical average: +$200
+- Your historical win rate on AAPL: 65%
+Likely cause: Entry RSI was elevated at 72
 ```
 
 ---
 
-## 7. 模式识别
+## 7. Pattern Recognition
 
-识别重复出现的交易模式。
+Identifies recurring patterns across your trade history.
 
-### 检测模式
+### Patterns Detected
 
-| 模式 | 说明 |
-|------|------|
-| 某标的持续亏损 | 某股票连续亏损3次以上 |
-| 时段表现差异 | 开盘/收盘/盘中表现不同 |
-| 周期性亏损 | 月初/月末/周五表现差 |
-| 连续盈利 | 某策略连续盈利 |
+| Pattern | Description |
+|---------|-------------|
+| Repeated losses on same ticker | Losing 3+ times on the same stock |
+| Time-of-day performance variance | Different results at open / mid-day / close |
+| Day-of-week patterns | Consistent underperformance on specific days |
+| Winning streak patterns | Identifying strategies that consistently work |
 
-### 典型建议
-
-- 暂停交易持续亏损的标的
-- 避开表现差的时间段
-- 复制成功的交易模式
+### Typical Recommendations
+- Pause or reduce size on tickers where you have 3+ consecutive losses
+- Avoid your historically weak time windows
+- Double down on repeatable winning setups
 
 ---
 
-## 8. 根因分析
+## 8. Root Cause Analysis
 
-亏损/盈利归因分析。
+Attributes P&L outcomes to underlying causes.
 
-### 归因维度
+### Attribution Dimensions
 
-| 根因 | 说明 | 示例 |
-|------|------|------|
-| timing | 时机问题 | 入场过早/过晚 |
-| direction | 方向错误 | 逆势交易 |
-| position_size | 仓位问题 | 仓位过重/过轻 |
-| external_event | 外部事件 | 财报/政策影响 |
-| execution | 执行问题 | 滑点/未按计划 |
+| Root cause | Description | Example |
+|------------|-------------|---------|
+| `timing` | Entry/exit timing issue | Entered too early / exited too late |
+| `direction` | Wrong directional call | Counter-trend trade |
+| `position_size` | Size too large or too small | Oversized relative to conviction |
+| `external_event` | External catalyst | Earnings surprise, macro event |
+| `execution` | Execution issue | Slippage, partial fill |
 
-### 输出格式
-
+### Output Format
 ```json
 {
   "position_id": 123,
   "pnl": -500,
   "root_cause": "timing",
-  "analysis": "入场RSI=75，处于超买区域",
-  "suggestion": "等待RSI回落至50以下再入场"
+  "analysis": "Entry RSI was 75 — overbought zone",
+  "suggestion": "Wait for RSI to pull back below 50 before entering long"
 }
 ```
 
 ---
 
-## 9. 事件关联
+## 9. Event Correlation
 
-关联财报、异动等事件。
+Correlates trades with earnings, price spikes, and volume anomalies.
 
-### 检测事件
+### Events Detected
+- Trades held through earnings dates
+- Price spikes during holding period (single day > 5%)
+- Volume anomalies (> 2× average volume)
+- Major macro or news events
 
-- 财报日期前后交易
-- 价格异动（单日 > 5%）
-- 成交量异动（> 2倍均量）
-- 重大新闻发布
-
-### 典型输出
-
+### Example Output
 ```
-⚠️ 财报前持仓风险
-NVDA 持仓期间包含财报日 (2024-02-21)
-财报后波动: +15%
-建议: 财报前减仓或平仓以降低风险
+⚠️  Earnings risk: held through earnings
+NVDA position included earnings date (2024-02-21)
+Post-earnings move: +15%
+Recommendation: Consider reducing size or closing before earnings to limit binary risk
 ```
 
 ---
 
-## 10. 改进建议
+## 10. Improvement Recommendations
 
-汇总可操作的具体改进措施。
+Aggregates the highest-priority, actionable improvements from all other dimensions.
 
-### 建议分类
+### Recommendation Categories
 
-| 类别 | 优先级 | 示例 |
-|------|--------|------|
-| 风险控制 | 高 | 设置止损位 |
-| 入场优化 | 高 | 等待信号确认 |
-| 出场优化 | 中 | 使用移动止损 |
-| 成本控制 | 中 | 减少交易频率 |
-| 心理管理 | 低 | 避免情绪交易 |
+| Category | Priority | Example |
+|----------|----------|---------|
+| Risk control | High | Set and honor stop-loss levels |
+| Entry optimization | High | Wait for signal confirmation |
+| Exit optimization | Medium | Use trailing stops |
+| Cost control | Medium | Reduce trade frequency |
+| Psychology | Low | Avoid revenge trading |
 
-### 建议格式
+### Recommendation Format
 
-每条建议包含：
-- **标题**: 简明扼要
-- **问题描述**: 发现了什么问题
-- **证据**: 支撑数据
-- **具体建议**: 如何改进
-- **相关案例**: 典型交易示例
-
----
-
-## 洞察优先级
-
-洞察按优先级排序输出：
-
-| 优先级 | 范围 | 类型 |
-|--------|------|------|
-| 90-100 | 紧急 | 重大亏损、风险失控 |
-| 70-89 | 高 | 频繁错误、模式问题 |
-| 50-69 | 中 | 可优化项 |
-| 30-49 | 低 | 建议关注 |
-| 0-29 | 信息 | 正面反馈 |
+Each recommendation includes:
+- **Title**: Concise label
+- **Problem**: What was observed
+- **Evidence**: Supporting data
+- **Recommendation**: Specific action to take
+- **Example trade**: Illustrative case from your history
 
 ---
 
-## 使用建议
+## Insight Priority Levels
 
-1. **优先处理高优先级**: 先解决评分 70+ 的问题
-2. **建立检查清单**: 根据洞察建立交易前检查清单
-3. **定期复盘**: 每周/每月查看洞察变化趋势
-4. **追踪改进**: 记录采纳建议后的效果变化
-5. **分享讨论**: 与交易伙伴讨论洞察内容
+Insights are ranked and surfaced by priority:
+
+| Priority score | Level | Type |
+|---------------|-------|------|
+| 90–100 | 🚨 Critical | Major loss, risk out of control |
+| 70–89 | 🔴 High | Frequent errors, persistent pattern |
+| 50–69 | 🟡 Medium | Optimization opportunities |
+| 30–49 | 🟢 Low | Minor suggestions |
+| 0–29 | ℹ️ Info | Positive feedback |
+
+---
+
+## Usage Tips
+
+1. **Address critical insights first**: Focus on the 70+ priority items immediately
+2. **Build a pre-trade checklist**: Turn recurring insights into checklist items
+3. **Review regularly**: Check insight trends weekly/monthly
+4. **Track adoption**: Log which recommendations you've implemented and measure impact
+5. **Share with a trading partner**: Discussing insights often accelerates improvement
