@@ -14,6 +14,7 @@ Market routing (auto-detected from ticker format):
 """
 
 import argparse
+import sys
 import re
 from datetime import datetime, timedelta
 
@@ -83,12 +84,12 @@ def fetch_sec_filings(ticker: str, days: int = 30, filing_type: str | None = Non
     """Fetch recent SEC filings for a US ticker via EDGAR."""
     import requests
 
-    print(f"Fetching SEC EDGAR filings for {ticker}...")
+    print(f"Fetching SEC EDGAR filings for {ticker}...", file=__import__("sys").stderr)
 
     cik = get_cik(ticker)
     if not cik:
-        print(f"  ⚠️  Could not resolve {ticker} to a CIK. "
-              "Check ticker spelling or try the SEC EDGAR search at https://www.sec.gov/cgi-bin/browse-edgar")
+        print(f"  ⚠️  Could not resolve {ticker} to a CIK. ", file=__import__("sys").stderr
+              "Check ticker spelling or try the SEC EDGAR search at https://www.sec.gov/cgi-bin/browse-edgar", file=__import__("sys").stderr)
         return []
 
     url = f"https://data.sec.gov/submissions/CIK{cik}.json"
@@ -162,7 +163,7 @@ def fetch_cn_announcements(ticker: str, days: int = 30, keyword: str | None = No
     import pandas as pd
 
     code = normalize_cn_code(ticker)
-    print(f"Fetching A-share announcements for {code} (Eastmoney)...")
+    print(f"Fetching A-share announcements for {code} (Eastmoney)...", file=__import__("sys").stderr)
 
     today = datetime.now().date()
     cutoff = today - timedelta(days=days)
@@ -170,7 +171,7 @@ def fetch_cn_announcements(ticker: str, days: int = 30, keyword: str | None = No
     try:
         df = ak.stock_notice_report(symbol="全部")
     except Exception as e:
-        print(f"  ⚠️  Failed to fetch announcements: {e}")
+        print(f"  ⚠️  Failed to fetch announcements: {e}", file=__import__("sys").stderr)
         return []
 
     if df is None or df.empty:
