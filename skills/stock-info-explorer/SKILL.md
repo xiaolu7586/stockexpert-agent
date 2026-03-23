@@ -1,85 +1,86 @@
 ---
 name: stock-info-explorer
 description: >-
-  A Yahoo Finance (yfinance) powered financial analysis tool.
-  Get real-time quotes, generate high-resolution charts with moving averages + indicators (RSI/MACD/Bollinger/VWAP/ATR),
-  summarize fundamentals, and run a one-shot report that outputs both a text summary and a Pro chart.
+  A Yahoo Finance powered financial analysis tool for global markets.
+  Get real-time quotes, generate technical indicator reports (RSI/MACD/Bollinger/VWAP/ATR),
+  summarize fundamentals, and run one-shot comprehensive text reports.
+  Supports US stocks, A-share, HK stocks, crypto, and forex.
 ---
 
-# Stock Information Explorer
+# Stock Info Explorer
 
-This skill fetches OHLCV data from Yahoo Finance via `yfinance` and computes technical indicators **locally** (no API key required).
+Real-time quotes, technical indicators, and fundamental summaries — powered by Yahoo Finance, no API key required.
+
+## Supported Markets
+
+US stocks · A-share (SSE/SZSE) · HK stocks · Cryptocurrency · Forex
 
 ## Commands
 
-### 1) Real-time Quotes (`price`)
+### 1) Real-time Quote (`price`)
 ```bash
 uv run --script scripts/yf.py price TSLA
-# shorthand
-uv run --script scripts/yf.py TSLA
+uv run --script scripts/yf.py price 000001.SZ
+uv run --script scripts/yf.py price BTC-USD
 ```
 
 ### 2) Fundamental Summary (`fundamentals`)
 ```bash
 uv run --script scripts/yf.py fundamentals NVDA
+uv run --script scripts/yf.py fundamentals 600519.SS
 ```
 
-### 3) ASCII Trend (`history`)
+### 3) Price History ASCII Chart (`history`)
 ```bash
 uv run --script scripts/yf.py history AAPL 6mo
+uv run --script scripts/yf.py history 000001.SZ 3mo
 ```
 
-### 4) Professional Analysis (`pro`)
-⚠️ **已改为文本报告模式** - 不再生成PNG图表，输出详细的技术指标文本分析。
+### 4) Technical Analysis Report (`pro`)
+Outputs a detailed text report — no PNG charts generated.
 
 ```bash
-# 基础分析（价格区间）
-uv run --script scripts/yf.py pro 000660.KS 6mo
+# US stocks
+uv run --script scripts/yf.py pro NVDA 6mo --rsi --macd --bb
+uv run --script scripts/yf.py pro TSLA 6mo --rsi --macd --bb --vwap --atr
 
-# 带技术指标
-uv run --script scripts/yf.py pro 002368.SZ 6mo --rsi --macd --bb
+# A-share (Windows: prefix with $env:PYTHONIOENCODING='utf-8';)
+uv run --script scripts/yf.py pro 000001.SZ 6mo --rsi --macd --bb
 ```
 
-#### 可用指标 (optional)
-添加标志以包含相应技术指标分析。
+#### Available Indicators
 
-```bash
-uv run --script scripts/yf.py pro TSLA 6mo --rsi --macd --bb
-uv run --script scripts/yf.py pro TSLA 6mo --vwap --atr
-```
-
-- `--rsi` : RSI(14) - 超买超卖指标
-- `--macd`: MACD(12,26,9) - 趋势动量指标
-- `--bb`  : Bollinger Bands(20,2) - 布林带
-- `--vwap`: VWAP - 成交量加权均价
-- `--atr` : ATR(14) - 平均真实波幅
-
-**输出格式：** 文本报告，包含当前值、状态判断、交易建议
+| Flag | Indicator | Description |
+|------|-----------|-------------|
+| `--rsi` | RSI(14) | Relative Strength Index — overbought/oversold |
+| `--macd` | MACD(12,26,9) | Trend momentum — crossovers and divergence |
+| `--bb` | Bollinger Bands(20,2) | Volatility bands — squeeze and breakout |
+| `--vwap` | VWAP | Volume Weighted Average Price |
+| `--atr` | ATR(14) | Average True Range — volatility measure |
 
 ### 5) One-shot Report (`report`) ⭐
-⚠️ **已改为纯文本模式** - 输出综合分析报告（行情+基本面+技术信号），不再生成PNG图表。
+Comprehensive text report: quotes + fundamentals + all technical signals.
 
 ```bash
-uv run --script scripts/yf.py report 000660.KS 6mo
-# 输出：文本格式的综合分析报告
+uv run --script scripts/yf.py report NVDA 6mo
+uv run --script scripts/yf.py report 600519.SS 6mo
 ```
 
-**报告内容：**
-- 行情概要（价格、涨跌、市值、市盈率）
-- 技术信号（RSI、布林带位置、MACD趋势）
-- 详细技术指标分析（同pro命令）
-
 ## Ticker Examples
-- US stocks: `AAPL`, `NVDA`, `TSLA`
-- KR stocks: `005930.KS`, `000660.KS`
-- Crypto: `BTC-USD`, `ETH-KRW`
-- Forex: `USDKRW=X`
 
-## Notes / Limitations
-- Indicators are **computed locally** from price data (Yahoo does not reliably provide precomputed indicator series).
-- Data quality may vary by ticker/market (e.g., missing volume for some symbols).
-- ⚠️ **PNG图表功能已禁用** - 所有输出均为文本格式，适合命令行环境。
-- 中文输出在Windows PowerShell中可能显示为乱码（GBK编码问题），但数据准确。
+| Market | Format | Examples |
+|--------|--------|---------|
+| US stocks | `TICKER` | `AAPL`, `NVDA`, `TSLA`, `MSFT`, `AMZN` |
+| A-share (Shanghai) | `XXXXXX.SS` | `600519.SS`, `601318.SS` |
+| A-share (Shenzhen) | `XXXXXX.SZ` | `000001.SZ`, `002594.SZ` |
+| HK stocks | `XXXX.HK` | `0700.HK`, `9988.HK` |
+| Crypto | `COIN-USD` | `BTC-USD`, `ETH-USD` |
+| Forex | `XXXYYY=X` | `EURUSD=X`, `GBPUSD=X` |
 
----
-Korean note: 실시간 시세 + 펀더멘털 + 기술지표(차트/요약)까지 한 번에 처리하는 종합 주식 분석 스킬입니다.
+## Notes & Limitations
+
+- All indicators are **computed locally** from OHLCV data — no dependency on Yahoo's pre-computed series
+- **PNG chart generation is disabled** — all output is text-based for CLI compatibility
+- Data quality is highest for US stocks; some metrics may be missing for less-covered markets
+- Real-time US quotes may have up to 15-minute delay
+- On Windows PowerShell, prefix commands with `$env:PYTHONIOENCODING='utf-8';` when analyzing A-share stocks to avoid encoding issues
