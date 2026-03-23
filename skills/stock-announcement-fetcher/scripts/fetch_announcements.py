@@ -15,8 +15,6 @@ Market routing (auto-detected from ticker format):
 
 import argparse
 import re
-import sys
-import time
 from datetime import datetime, timedelta
 
 
@@ -197,7 +195,7 @@ def fetch_cn_announcements(ticker: str, days: int = 30, keyword: str | None = No
     results = []
     for _, row in df.iterrows():
         results.append({
-            "date": str(row.get(date_cols[0], "")[:10]) if date_cols else "",
+            "date": str(row.get(date_cols[0], ""))[:10] if date_cols else "",
             "title": str(row.get(title_cols[0], "")) if title_cols else str(row.iloc[0]),
             "type": str(row.get("公告类型", "")),
             "url": str(row.get("URL", row.get("链接", ""))),
