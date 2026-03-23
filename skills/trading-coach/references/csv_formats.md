@@ -1,155 +1,197 @@
-# 支持的CSV格式
+# Supported CSV Formats
 
-## 富途证券 (中文) - futu_cn
-
-**编码**: UTF-8-BOM  
-**分隔符**: 逗号
-
-### 必需字段
-
-| 字段名 | 说明 | 示例 |
-|--------|------|------|
-| 方向 | 交易方向 | 买入/卖出/卖空/买券还券 |
-| 代码 | 股票代码 | AAPL |
-| 成交价格 | 成交价格 | 150.50 |
-| 成交数量 | 成交股数 | 100 |
-| 成交时间 | 成交时间 | 2024/01/15 09:30:00 |
-| 市场 | 市场类型 | 美股/港股/沪深 |
-| 交易状态 | 订单状态 | 全部成交/部分成交/已撤单 |
-
-### 可选字段
-
-| 字段名 | 说明 |
-|--------|------|
-| 名称 | 股票名称 |
-| 订单价格 | 委托价格 |
-| 订单数量 | 委托数量 |
-| 币种 | 交易币种 |
-| 合计费用 | 总费用 |
-| 佣金 | 佣金 |
-| 平台使用费 | 平台费 |
+## US & International Brokers
 
 ---
 
-## 富途证券 (英文) - futu_en
+### Interactive Brokers (IBKR) — `ibkr`
 
-**编码**: UTF-8  
-**分隔符**: 逗号
-
-### 必需字段
+**How to export**: Account Management → Reports → Activity → Trades section  
+**Encoding**: UTF-8  
+**Delimiter**: Comma
 
 | Field | Description | Example |
 |-------|-------------|---------|
-| Side | Trade direction | Buy/Sell/Short Sell/Buy to Cover |
+| Symbol | Ticker symbol | AAPL |
+| Date/Time | Trade date and time | 2024-01-15, 09:30:00 |
+| Quantity | Shares (positive = buy, negative = sell) | 100 / -100 |
+| T. Price | Trade price | 185.50 |
+| Comm/Fee | Commission | 1.00 |
+| Asset Category | Instrument type | STK / OPT |
+| Currency | Trade currency | USD |
+
+---
+
+### Charles Schwab — `schwab`
+
+**How to export**: Accounts → History → Export  
+**Encoding**: UTF-8  
+**Delimiter**: Comma
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| Date | Trade date | 01/15/2024 |
+| Action | Buy/Sell | Buy / Sell |
+| Symbol | Ticker | TSLA |
+| Quantity | Shares | 50 |
+| Price | Fill price | 220.30 |
+| Fees & Comm | Commission | 0.00 |
+| Amount | Total amount | 11015.00 |
+
+---
+
+### TD Ameritrade / thinkorswim — `tdameritrade`
+
+**How to export**: My Account → History & Statements → Export  
+**Encoding**: UTF-8  
+**Delimiter**: Comma
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| DATE | Trade date | 01/15/2024 |
+| TRANSACTION ID | Unique ID | 12345678 |
+| DESCRIPTION | Trade description | Bought 100 NVDA @ 495.00 |
+| QUANTITY | Shares | 100 |
+| SYMBOL | Ticker | NVDA |
+| PRICE | Fill price | 495.00 |
+| COMMISSION | Commission | 0.00 |
+| AMOUNT | Net amount | -49500.00 |
+| REG FEE | Regulatory fee | 0.01 |
+
+---
+
+### Robinhood — `robinhood`
+
+**How to export**: Account → Statements → Download CSV  
+**Encoding**: UTF-8  
+**Delimiter**: Comma
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| Activity Date | Trade date | 01/15/2024 |
+| Process Date | Settlement date | 01/17/2024 |
+| Settle Date | Settlement date | 01/17/2024 |
+| Instrument | Ticker | AAPL |
+| Description | Trade description | Buy 10 AAPL |
+| Trans Code | Transaction type | Buy / Sell |
+| Quantity | Shares | 10 |
+| Price | Fill price | 185.50 |
+| Amount | Net amount | -1855.00 |
+
+---
+
+### Webull — `webull`
+
+**How to export**: Orders → History → Export  
+**Encoding**: UTF-8  
+**Delimiter**: Comma
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| Time | Trade date/time | 2024-01-15 09:30:00 |
+| Symbol | Ticker | MSFT |
+| Side | Buy/Sell | BUY / SELL |
+| Filled Qty | Shares | 25 |
+| Avg Price | Average fill price | 375.20 |
+| Filled Amount | Total amount | 9380.00 |
+| Status | Order status | Filled |
+
+---
+
+## Asian Brokers
+
+---
+
+### Futu / Moomoo (English) — `futu_en`
+
+**Encoding**: UTF-8  
+**Delimiter**: Comma
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| Side | Trade direction | Buy / Sell / Short Sell / Buy to Cover |
 | Symbol | Stock code | AAPL |
 | Fill Price | Fill price | 150.50 |
 | Fill Qty | Fill quantity | 100 |
 | Fill Time | Fill time | 2024/01/15 09:30:00 |
-| Market | Market type | US/HK/CN |
-| Status | Order status | Filled/Partially Filled/Cancelled |
+| Market | Market type | US / HK / CN |
+| Status | Order status | Filled / Partially Filled |
 
 ---
 
-## 老虎证券 - tiger_cn
+### Futu / Moomoo (Chinese) — `futu_cn`
 
-**编码**: UTF-8  
-**分隔符**: 逗号
+**Encoding**: UTF-8-BOM  
+**Delimiter**: Comma
 
-### 字段映射
-
-| 字段名 | 说明 |
-|--------|------|
-| 交易方向 | 买入/卖出 |
-| 股票代码 | 标的代码 |
-| 股票名称 | 标的名称 |
-| 成交均价 | 成交价格 |
-| 成交数量 | 成交股数 |
-| 成交金额 | 成交金额 |
-| 成交时间 | 成交时间 |
-| 币种 | 交易币种 |
-| 手续费 | 总费用 |
+| Field | Description | Example |
+|-------|-------------|---------|
+| 方向 | Trade direction | 买入 / 卖出 |
+| 代码 | Stock code | AAPL |
+| 成交价格 | Fill price | 150.50 |
+| 成交数量 | Fill quantity | 100 |
+| 成交时间 | Fill time | 2024/01/15 09:30:00 |
+| 市场 | Market | 美股 / 港股 / 沪深 |
 
 ---
 
-## 中信证券 - citic_cn
+### Tiger Brokers — `tiger_cn`
 
-**编码**: GBK  
-**分隔符**: 逗号
+**Encoding**: UTF-8  
+**Delimiter**: Comma
 
-### 字段映射
-
-| 字段名 | 说明 |
-|--------|------|
-| 委托方向 | 买入/卖出 |
-| 证券代码 | A股代码 |
-| 证券名称 | 股票名称 |
-| 成交价格 | 成交价格 |
-| 成交数量 | 成交股数 |
-| 成交金额 | 成交金额 |
-| 成交时间 | 成交时间 |
-| 手续费 | 佣金 |
-| 过户费 | 过户费 |
-| 印花税 | 印花税 |
-| 席位代码 | 营业部代码 |
+| Field | Description | Example |
+|-------|-------------|---------|
+| 交易方向 | Trade direction | 买入 / 卖出 |
+| 股票代码 | Stock code | AAPL |
+| 成交均价 | Fill price | 150.50 |
+| 成交数量 | Fill quantity | 100 |
+| 成交时间 | Fill time | 2024-01-15 09:30:00 |
+| 币种 | Currency | USD / HKD / CNY |
+| 手续费 | Commission | 0.99 |
 
 ---
 
-## 华泰证券 - huatai_cn
+## Standard Internal Fields
 
-**编码**: GBK  
-**分隔符**: 逗号
+After import, all formats are normalized to these standard fields:
 
-### 字段映射
-
-| 字段名 | 说明 |
-|--------|------|
-| 买卖方向 | 买入/卖出 或 1/2 |
-| 证券代码 | A股代码 |
-| 证券名称 | 股票名称 |
-| 成交价格 | 成交价格 |
-| 成交数量 | 成交股数 |
-| 成交金额 | 成交金额 |
-| 成交时间 | 成交时间 |
-| 佣金 | 佣金 |
-| 过户费 | 过户费 |
-| 经手费 | 交易所经手费 |
-| 证管费 | 证监会征费 |
+| Field | Description | Required |
+|-------|-------------|---------|
+| `symbol` | Stock ticker | ✅ |
+| `symbol_name` | Company name | |
+| `direction` | `buy` / `sell` / `sell_short` / `buy_to_cover` | ✅ |
+| `filled_price` | Fill price | ✅ |
+| `filled_quantity` | Number of shares | ✅ |
+| `filled_amount` | Total value | |
+| `filled_time` | Fill timestamp | ✅ |
+| `market` | `us` / `hk` / `cn` | |
+| `currency` | Trade currency | |
+| `status` | `filled` / `cancelled` | |
+| `total_fee` | Total fees/commissions | |
+| `commission` | Broker commission | |
 
 ---
 
-## 添加新券商
+## Adding a New Broker
 
-如需支持新券商格式，在 `scripts/import_trades.py` 的 `BROKER_CONFIGS` 中添加配置：
+Add a new entry to `BROKER_CONFIGS` in `scripts/import_trades.py`:
 
 ```python
 "new_broker": {
-    "name": "新券商名称",
-    "encoding": "utf-8",  # 或 gbk
-    "detect_columns": ["特征字段1", "特征字段2"],
+    "name": "Broker Name",
+    "encoding": "utf-8",
+    "detect_columns": ["unique_column_1", "unique_column_2"],
     "field_map": {
-        "原字段名": "标准字段名",
-        # ...
+        "Date": "filled_time",
+        "Action": "direction",
+        "Symbol": "symbol",
+        "Quantity": "filled_quantity",
+        "Price": "filled_price",
+        "Amount": "filled_amount",
+        "Commission": "commission",
     },
-    "direction_map": {"买入": "buy", "卖出": "sell"},
-    "status_map": {"已成交": "filled"},
-    "market_map": {},
+    "direction_map": {"Buy": "buy", "Sell": "sell"},
+    "status_map": {"Filled": "filled"},
 }
 ```
-
-### 标准字段名
-
-| 字段 | 说明 | 必需 |
-|------|------|------|
-| symbol | 股票代码 | ✅ |
-| symbol_name | 股票名称 | |
-| direction | 交易方向 (buy/sell/sell_short/buy_to_cover) | ✅ |
-| filled_price | 成交价格 | ✅ |
-| filled_quantity | 成交数量 | ✅ |
-| filled_amount | 成交金额 | |
-| filled_time | 成交时间 | ✅ |
-| market | 市场 (us/hk/cn) | |
-| currency | 币种 | |
-| status | 状态 (filled/cancelled) | |
-| total_fee | 总费用 | |
-| commission | 佣金 | |
-| transfer_fee | 过户费 | |
