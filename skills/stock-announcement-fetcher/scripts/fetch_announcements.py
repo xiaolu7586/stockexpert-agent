@@ -9,13 +9,13 @@ Stock Announcement Fetcher
 Fetches corporate announcements and regulatory filings.
 
 Market routing (auto-detected from ticker format):
-  - US stocks (AAPL, TSLA, NVDA)  → SEC EDGAR
-  - A-share (600519, 000001.SZ)   → AkShare / Eastmoney
+  - US stocks (AAPL, TSLA, NVDA)  -> SEC EDGAR
+  - A-share (600519, 000001.SZ)   -> AkShare / Eastmoney
 """
 
 import argparse
-import sys
 import re
+import sys
 from datetime import datetime, timedelta
 
 
@@ -26,13 +26,10 @@ from datetime import datetime, timedelta
 def detect_market(ticker: str) -> str:
     """Return 'us' or 'cn' based on ticker format."""
     ticker = ticker.strip().upper()
-    # A-share: 6-digit code optionally followed by .SS or .SZ
     if re.match(r"^\d{6}(\.SS|\.SZ)?$", ticker, re.IGNORECASE):
         return "cn"
-    # Explicit A-share suffix
     if ticker.endswith(".SS") or ticker.endswith(".SZ"):
         return "cn"
-    # Everything else treated as US
     return "us"
 
 
@@ -51,22 +48,20 @@ SEC_HEADERS = {
 }
 
 FILING_TYPE_LABELS = {
-    "8-K":    "Material Event",
-    "10-K":   "Annual Report",
-    "10-Q":   "Quarterly Report",
-    "S-1":    "IPO Registration",
+    "8-K":     "Material Event",
+    "10-K":    "Annual Report",
+    "10-Q":    "Quarterly Report",
+    "S-1":     "IPO Registration",
     "DEF 14A": "Proxy Statement",
-    "SC 13G": "Large Shareholder (passive)",
-    "SC 13D": "Large Shareholder (active)",
-    "4":      "Insider Transaction",
+    "SC 13G":  "Large Shareholder (passive)",
+    "SC 13D":  "Large Shareholder (active)",
+    "4":       "Insider Transaction",
 }
 
 
 def get_cik(ticker: str) -> str | None:
     """Resolve ticker to SEC CIK number."""
     import requests
-    url = f"https://efts.sec.gov/LATEST/search-index?q=%22{ticker}%22&dateRange=custom&startdt=2020-01-01&forms=10-K"
-    # Faster: use company_tickers.json
     resp = requests.get(
         "https://www.sec.gov/files/company_tickers.json",
         headers=SEC_HEADERS,
@@ -84,12 +79,15 @@ def fetch_sec_filings(ticker: str, days: int = 30, filing_type: str | None = Non
     """Fetch recent SEC filings for a US ticker via EDGAR."""
     import requests
 
-    print(f"Fetching SEC EDGAR filings for {ticker}...", file=__import__("sys").stderr)
+    print(f"Fetching SEC EDGAR filings for {ticker}...", file=sys.stderr)
 
     cik = get_cik(ticker)
     if not cik:
-        print(f"  ⚠️  Could not resolve {ticker} to a CIK. ", file=__import__("sys").stderr
-              "Check ticker spelling or try the SEC EDGAR search at https://www.sec.gov/cgi-bin/browse-edgar", file=__import__("sys").stderr)
+        print(
+            f"  WARNING: Could not resolve {ticker} to a CIK. "
+            "Check ticker spelling or visit https://www.sec.gov/cgi-bin/browse-edgar",
+            file=sys.stderr,
+        )
         return []
 
     url = f"https://data.sec.gov/submissions/CIK{cik}.json"
@@ -100,9 +98,9 @@ def fetch_sec_filings(ticker: str, days: int = 30, filing_type: str | None = Non
     company_name = data.get("name", ticker)
     recent = data.get("filings", {}).get("recent", {})
 
-    forms       = recent.get("form", [])
-    filed_dates = recent.get("filingDate", [])
-    accessions  = recent.get("accessionNumber", [])
+    forms        = recent.get("form", [])
+    filed_dates  = recent.get("filingDate", [])
+    accessions   = recent.get("accessionNumber", [])
     descriptions = recent.get("primaryDocument", [])
 
     cutoff = datetime.now() - timedelta(days=days)
@@ -119,7 +117,7 @@ def fetch_sec_filings(ticker: str, days: int = 30, filing_type: str | None = Non
             continue
 
         acc_clean = accession.replace("-", "")
-        url = (
+        filing_url = (
             f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/"
             f"{acc_clean}/{doc}"
         )
@@ -128,7 +126,7 @@ def fetch_sec_filings(ticker: str, days: int = 30, filing_type: str | None = Non
             "type": form,
             "label": FILING_TYPE_LABELS.get(form, form),
             "title": f"{form} — {FILING_TYPE_LABELS.get(form, 'SEC Filing')}",
-            "url": url,
+            "url": filing_url,
             "company": company_name,
         })
 
@@ -163,7 +161,7 @@ def fetch_cn_announcements(ticker: str, days: int = 30, keyword: str | None = No
     import pandas as pd
 
     code = normalize_cn_code(ticker)
-    print(f"Fetching A-share announcements for {code} (Eastmoney)...", file=__import__("sys").stderr)
+    print(f"Fetching A-share announcements for {code} (Eastmoney)...", file=sys.stderr)
 
     today = datetime.now().date()
     cutoff = today - timedelta(days=days)
@@ -171,7 +169,7 @@ def fetch_cn_announcements(ticker: str, days: int = 30, keyword: str | None = No
     try:
         df = ak.stock_notice_report(symbol="全部")
     except Exception as e:
-        print(f"  ⚠️  Failed to fetch announcements: {e}", file=__import__("sys").stderr)
+        print(f"  WARNING: Failed to fetch announcements: {e}", file=sys.stderr)
         return []
 
     if df is None or df.empty:
@@ -234,12 +232,12 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # US — SEC EDGAR
+  # US -- SEC EDGAR
   uv run --script fetch_announcements.py AAPL
   uv run --script fetch_announcements.py TSLA --days 7
   uv run --script fetch_announcements.py NVDA --type 10-Q
 
-  # A-share — Eastmoney
+  # A-share -- Eastmoney
   uv run --script fetch_announcements.py 600519 --days 7
   uv run --script fetch_announcements.py 000001.SZ --keyword earnings
         """,
@@ -248,7 +246,8 @@ Examples:
     parser.add_argument("--days", type=int, default=30, help="Look back N days (default: 30)")
     parser.add_argument("--type", dest="filing_type", default=None,
                         help="US only: filing type filter (e.g. 8-K, 10-K, 10-Q)")
-    parser.add_argument("--keyword", default=None, help="A-share only: keyword filter for announcement titles")
+    parser.add_argument("--keyword", default=None,
+                        help="A-share only: keyword filter for announcement titles")
     parser.add_argument("--format", dest="fmt", choices=["text", "json"], default="text",
                         help="Output format (default: text)")
     args = parser.parse_args()
