@@ -1,40 +1,60 @@
-# 股票专家 Agent (stockexpert)
+# Stock Expert Agent
 
-> 专业AI助手，专注于A股公告追踪、全球股市分析和交易复盘。提供数据驱动的投资决策参考。
+> AI-powered stock research agent for **US & A-share markets** — real-time quotes, SEC filings, corporate announcements, deep multi-dimensional analysis, and broker trade review.
 
-## 快速部署
+Built for [ClawDI](https://clawdi.com) users. No paid data subscriptions required.
 
-### Step 1：克隆仓库
+---
+
+## 🇺🇸 US Market Support
+
+Stock Expert is built with North American investors as a first-class use case:
+
+| Capability | US Market | A-Share Market |
+|---|---|---|
+| Real-time quotes | ✅ NYSE / NASDAQ / AMEX | ✅ SSE / SZSE |
+| Deep analysis (value + technical + growth) | ✅ Full support | ✅ Full support |
+| Corporate announcements & filings | ✅ SEC EDGAR (8-K, 10-K, 10-Q, S-1...) | ✅ Eastmoney / AkShare |
+| Technical indicators (RSI / MACD / BB / VWAP) | ✅ | ✅ |
+| Trade review from broker CSV | ✅ IBKR, Schwab, TD Ameritrade, Robinhood, Webull | ✅ Futu, Tiger |
+| Ticker format | `AAPL`, `TSLA`, `NVDA` | `600519.SS`, `000001.SZ` |
+
+Data sources: **Yahoo Finance** (quotes & analysis) · **SEC EDGAR** (US filings, free, no API key) · **AkShare / Eastmoney** (A-share announcements)
+
+---
+
+## 🚀 Quick Deploy
+
+### Step 1 — Clone the repo
 
 ```bash
 git clone https://github.com/xiaolu7586/stockexpert-agent.git
 ```
 
-### Step 2：将 workspace 复制到你的 claw 平台目录
+### Step 2 — Copy workspace to your ClawDI directory
 
 **macOS / Linux:**
 ```bash
-cp -r stockexpert-agent ~/.{your-claw-platform}/workspace-stockexpert-1
+cp -r stockexpert-agent ~/.clawdi/workspace-stockexpert-1
 ```
 
-**Windows:**
+**Windows (PowerShell):**
 ```powershell
-Copy-Item -Recurse stockexpert-agent "$env:USERPROFILE\.{your-claw-platform}\workspace-stockexpert-1"
+Copy-Item -Recurse stockexpert-agent "$env:USERPROFILE\.clawdi\workspace-stockexpert-1"
 ```
 
-### Step 3：将 agent 配置写入平台配置文件
+### Step 3 — Add agent config to your ClawDI config file
 
-打开你的 claw 平台配置文件（通常是 `~/.{platform}/{platform}.json`），在 `agents.list` 数组中追加以下内容，并：
-- 将 `{YOUR_MODEL_ID}` 替换为你的平台对应的模型 ID（如 `claude-sonnet-4-6`、`anthropic/claude-3-5-sonnet-20241022` 等）
-- 将 `workspace` 路径改为实际路径
+Open your ClawDI config file and append the following to the `agents.list` array.  
+Replace `{YOUR_MODEL_ID}` with your model (e.g. `claude-sonnet-4-6`) and set the correct `workspace` path:
 
 ```json
 {
   "id": "stockexpert-1",
-  "name": "股票专家",
-  "description": "专业AI助手，专注于A股公告追踪、全球股市分析和交易复盘。提供数据驱动的投资决策参考。",
+  "name": "Stock Expert",
+  "description": "AI-powered stock research agent for US & A-share markets. Real-time quotes, SEC filings, A-share announcements, deep multi-dimensional analysis, and trade review.",
   "model": "{YOUR_MODEL_ID}",
-  "workspace": "/YOUR_HOME/.{your-claw-platform}/workspace-stockexpert-1",
+  "workspace": "/YOUR_HOME/.clawdi/workspace-stockexpert-1",
   "skills": [
     "stock-announcement-fetcher",
     "trading-coach",
@@ -47,89 +67,227 @@ Copy-Item -Recurse stockexpert-agent "$env:USERPROFILE\.{your-claw-platform}\wor
 }
 ```
 
-### Step 4：重载配置
+### Step 4 — Reload config
 
-大多数 claw 平台支持热重载，无需完全重启。具体方式请参考你所用平台的文档。
-
----
-
-## 核心能力
-
-| Skill | 用途 | 数据源 |
-|---|---|---|
-| **stock-deep-analyzer** ⭐ | 一键深度分析（价值+技术+成长+财务四维评分） | Yahoo Finance |
-| **stock-announcement-fetcher** | A股上市公司公告监控 | 东方财富 (AkShare) |
-| **stock-info-explorer** | 实时行情 + 技术指标文本报告 | Yahoo Finance |
-| **trading-coach** | 券商CSV交易复盘（8维度评分+10维AI洞察） | 本地CSV |
+ClawDI supports hot reload — no full restart needed. Refer to ClawDI docs for your version.
 
 ---
 
-## Python 依赖
+## 🧠 Core Capabilities
 
-所有脚本使用 `uv` 自动管理依赖（推荐），也可手动安装：
+| Skill | What it does | Markets | Data Source |
+|---|---|---|---|
+| **stock-deep-analyzer** ⭐ | One-shot deep report: value + technical + growth + financial scoring | US · A-share · HK | Yahoo Finance |
+| **stock-announcement-fetcher** | Corporate announcements & regulatory filings | US (SEC EDGAR) · A-share (Eastmoney) | SEC.gov · AkShare |
+| **stock-info-explorer** | Real-time quotes, technical indicators, fundamental summary | US · A-share · HK · Crypto · Forex | Yahoo Finance |
+| **trading-coach** | Import broker CSV → FIFO matching → 8-dimension quality scoring + 10-dimension AI insights | US · A-share | Broker CSV export |
+
+---
+
+## 📊 Deep Analysis — What You Get
+
+Run a single command and receive a professional-grade report covering:
+
+- **Value metrics** — P/E, P/B, PEG, ROE, ROA, dividend yield
+- **Technical indicators** — MA5/20/60, RSI(14), MACD, Bollinger Bands, VWAP
+- **Growth signals** — Revenue growth YoY, earnings growth YoY, margin trends
+- **Financial health** — Debt-to-equity, current ratio, asset efficiency
+- **Overall rating /10** with investment strategies (long-term hold / swing trade / short-term)
+- **Key price levels** — support, resistance, stop-loss, target zones
+- **Risk warnings** — automated red flags for each dimension
+
+**Example — US stock:**
+```
+============================================================
+NVIDIA Corp (NVDA) - Deep Analysis Report
+============================================================
+
+[Real-time Overview]
+  Current: $875.40 (+2.31%)
+  Market Cap: $2.16T  |  Beta: 1.73
+  52-Week Range: $455.72 - $974.00
+
+[Value Investing - Score: 62/100]
+  ⚠️  P/E: 65.2 (Growth premium)
+  ✅  ROE: 123.8% (Exceptional)
+  ✅  Profit Margin: 55.04%
+
+[Technical Analysis - Score: 78/100]
+  ✅  RSI: 58.3 (Neutral — room to run)
+  ✅  MACD: Bullish crossover
+  ✅  Price above MA20 and MA60
+
+[Growth - Score: 95/100]
+  ⭐  Revenue Growth YoY: +122%
+  ⭐  Earnings Growth YoY: +581%
+
+[Investment Rating: ⭐⭐⭐⭐ Strong Buy]
+
+Recommended Strategy:
+- Swing trade: Buy $850-875, target $950-980
+- Stop loss: $820
+```
+
+---
+
+## 📰 Announcement & Filing Tracker
+
+Never miss a material event — automatically routed by market:
+
+**US stocks → SEC EDGAR**
+- 8-K (material events), 10-K (annual report), 10-Q (quarterly), S-1 (IPO), DEF 14A (proxy)
+- No API key required · Free · Official SEC data
+
+```bash
+# Get latest SEC filings for a US stock
+uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL
+uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py TSLA --days 7
+```
+
+**A-share → Eastmoney / AkShare**
+- All official disclosures: earnings, M&A, shareholder changes, governance events
+- Full coverage of SSE + SZSE listed companies
+
+```bash
+# Get announcements for an A-share stock
+uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519
+uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 000001.SZ --days 7
+```
+
+The script **auto-detects** the market from ticker format — no manual switching needed.
+
+---
+
+## 🏆 Trade Review — Supported Brokers
+
+Upload your broker's CSV export and get an 8-dimension quality score + 10-dimension AI insights.
+
+**US & International brokers:**
+| Broker | Format |
+|---|---|
+| Interactive Brokers (IBKR) | Activity Statement CSV |
+| Charles Schwab | Trade History CSV |
+| TD Ameritrade / thinkorswim | Transaction History CSV |
+| Robinhood | Account CSV export |
+| Webull | Transactions CSV |
+
+**Asian brokers:**
+| Broker | Format |
+|---|---|
+| Futu / Moomoo | CN or EN format |
+| Tiger Brokers | CN format |
+
+**What you get:**
+- FIFO position matching across all trades
+- 8-dimension score: entry timing · exit timing · trend alignment · risk management · market context · trading behavior · news fit · execution quality
+- 10-dimension AI insights: pattern recognition · emotional trading detection · cost drag · root cause analysis · specific improvement recommendations
+
+---
+
+## ⚙️ Python Dependencies
+
+All scripts use `uv` for automatic dependency management (recommended). Or install manually:
 
 ```bash
 # stock-deep-analyzer & stock-info-explorer
-pip install yfinance pandas numpy rich plotille
+pip install yfinance pandas numpy
 
 # stock-announcement-fetcher
-pip install akshare pandas PyPDF2 requests
+pip install akshare pandas requests
 ```
 
-> 推荐使用 [uv](https://github.com/astral-sh/uv) 运行脚本，依赖自动按需安装，无需预装。
+> Recommended: use [uv](https://github.com/astral-sh/uv) — dependencies install on demand, no pre-setup needed.
 
 ---
 
-## 常用命令（Windows PowerShell 环境）
+## 💻 Command Reference
+
+### macOS / Linux
+
+```bash
+# Deep analysis
+uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py NVDA
+uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL --period 1y
+uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 600519.SS
+
+# Real-time quote
+uv run --script skills/stock-info-explorer/scripts/yf.py price TSLA
+uv run --script skills/stock-info-explorer/scripts/yf.py price 000001.SZ
+
+# Technical analysis
+uv run --script skills/stock-info-explorer/scripts/yf.py pro NVDA 6mo --rsi --macd --bb
+
+# SEC filings (US)
+uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL --days 30
+
+# A-share announcements
+uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
+```
+
+### Windows (PowerShell)
 
 ```powershell
-# 深度分析（首选）
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 601288.SS
+# Deep analysis
+$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py NVDA
+$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 600519.SS --period 1y
 
-# 指定分析周期
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL --period 1y
+# Real-time quote
+uv run --script skills/stock-info-explorer/scripts/yf.py price TSLA
 
-# 实时行情
-uv run --script skills/stock-info-explorer/scripts/yf.py price 600519.SS
-
-# 技术指标报告
+# Technical analysis
 $env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-info-explorer/scripts/yf.py pro 000001.SZ 6mo --rsi --macd --bb
 
-# A股公告查询
+# SEC filings (US)
+uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL --days 30
+
+# A-share announcements
 $env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
 ```
 
 ---
 
-## 目录结构
+## 📁 Directory Structure
 
 ```
 stockexpert-agent/
-├── agent.json                                       # Agent 配置模板（填写后写入平台配置）
-├── AGENTS.md                                        # Agent 系统指令（核心）
-├── TOOLS.md                                         # 运行环境说明
+├── agent.json                                        # Agent config template
+├── AGENTS.md                                         # Agent system instructions
+├── TOOLS.md                                          # Runtime environment reference
 └── skills/
-    ├── stock-deep-analyzer/                         # ⭐ 主力技能
+    ├── stock-deep-analyzer/                          # ⭐ Primary skill
     │   ├── SKILL.md
-    │   └── scripts/deep_analyze.py
-    ├── stock-announcement-fetcher/                  # A股公告监控
+    │   └── scripts/deep_analyze.py                   # Yahoo Finance — US & A-share
+    ├── stock-announcement-fetcher/                   # Filings & announcements
     │   ├── SKILL.md
     │   ├── scripts/
-    │   │   ├── fetch_announcements.py               # 主脚本（AkShare/东方财富）
-    │   │   └── fetch_announcements_multi_source.py  # 备用（含 Tushare）
+    │   │   ├── fetch_announcements.py                # Auto-routes: SEC EDGAR or AkShare
+    │   │   └── fetch_announcements_multi_source.py   # Fallback with Tushare support
     │   └── references/
     │       ├── cninfo-api.md
     │       ├── tushare-guide.md
     │       └── upgrade-guide.md
-    ├── stock-info-explorer/                         # 行情查询
+    ├── stock-info-explorer/                          # Quotes & technical indicators
     │   ├── SKILL.md
     │   ├── _meta.json
-    │   └── scripts/yf.py
-    └── trading-coach/                               # 交易复盘
+    │   └── scripts/yf.py                             # Yahoo Finance — global markets
+    └── trading-coach/                                # Trade review & scoring
         ├── SKILL.md
         ├── _meta.json
         └── references/
-            ├── csv_formats.md                       # 5家券商CSV格式说明
-            ├── scoring_system.md                    # 8维度评分体系
-            └── insight_dimensions.md                # 10维度AI洞察说明
+            ├── csv_formats.md                        # US & Asian broker CSV formats
+            ├── scoring_system.md                     # 8-dimension scoring system
+            └── insight_dimensions.md                 # 10-dimension AI insight guide
 ```
+
+---
+
+## 📌 Ticker Format Reference
+
+| Market | Format | Examples |
+|---|---|---|
+| US stocks | `TICKER` | `AAPL`, `TSLA`, `NVDA`, `MSFT`, `AMZN` |
+| A-share (Shanghai) | `XXXXXX.SS` | `600519.SS`, `601318.SS` |
+| A-share (Shenzhen) | `XXXXXX.SZ` | `000001.SZ`, `002594.SZ` |
+| Hong Kong | `XXXX.HK` | `0700.HK`, `9988.HK` |
+| Crypto | `COIN-USD` | `BTC-USD`, `ETH-USD` |
+| Forex | `XXXYYY=X` | `EURUSD=X`, `GBPUSD=X` |
