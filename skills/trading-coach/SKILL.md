@@ -1,97 +1,95 @@
 ---
 name: trading-coach
 description: |
-  🏆 AI交易复盘教练 — 把你的券商CSV变成可执行的改进洞察！
-  自动FIFO配对持仓，8维度质量评分(入场/出场/趋势/风险...)，10维度AI洞察。
-  支持富途(中/英)、老虎、中信、华泰等主流券商。
-  触发条件: 用户提供交易CSV、要求分析交易表现、评估交易质量、生成复盘报告、
-  计算盈亏统计、识别交易模式问题、"帮我复盘"、"分析我的交易"。
+  AI trade review coach — turn your broker's CSV export into actionable improvement insights.
+  Supports US brokers (IBKR, Schwab, TD Ameritrade, Robinhood, Webull) and Asian brokers (Futu/Moomoo, Tiger).
+  Automatic FIFO position matching, 8-dimension quality scoring, 10-dimension AI insights.
+  Trigger when: user provides a trading CSV, asks to analyze trade performance, review trades,
+  calculate P&L statistics, identify trading patterns, or says "review my trades" / "analyze my trading".
 ---
 
-# 🏆 Trading Coach — AI交易复盘教练
+# 🏆 Trading Coach — AI Trade Review
 
-> 别再凭感觉交易了。让数据告诉你哪里做对了，哪里需要改进。
+> Stop trading on gut feel. Let data show you what's working and what needs to change.
 
-将券商导出的CSV交易记录，转化为**专业级复盘报告**和**可执行的改进建议**。
+Transform your broker's CSV trade history into a **professional review report** and **actionable improvement recommendations**.
 
-## ✨ 核心能力
+## ✨ Core Capabilities
 
-- 🔄 **智能导入** — 自动识别5种券商格式，一键导入
-- 📊 **FIFO配对** — 自动把买卖配对成完整持仓周期
-- 🎯 **8维度评分** — 入场、出场、趋势、风险、行为...全面诊断
-- 💡 **AI洞察** — 10维度分析，找出你的交易盲点
+- 🔄 **Smart Import** — Auto-detects broker format from 9 supported brokers
+- 📊 **FIFO Matching** — Automatically pairs buys and sells into complete position cycles
+- 🎯 **8-Dimension Scoring** — Entry, exit, trend, risk, market context, behavior, news fit, execution
+- 💡 **AI Insights** — 10-dimension analysis that surfaces your trading blind spots
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
 ```bash
-# 首次安装
-git clone https://github.com/BENZEMA216/tradingcoach.git ~/tradingcoach
-cd ~/tradingcoach
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt && cp config_template.py config.py
-
-# 一键复盘
-python scripts/import_trades.py /path/to/trades.csv  # 导入
-python scripts/run_matching.py                        # 配对
-python scripts/score_positions.py --all               # 评分
-python scripts/analyze_scores.py                      # 报告
+# Review your trades
+uv run --script skills/trading-coach/scripts/analyze_trades.py --file path/to/trades.csv
 ```
 
-## 📈 支持券商
+## 📈 Supported Brokers
 
-| 券商 | 编码 | 自动检测 |
-|------|------|----------|
-| 富途(中文) | UTF-8-BOM | ✅ 方向、代码、成交时间 |
-| 富途(英文) | UTF-8 | ✅ Side、Symbol、Fill Time |
-| 老虎证券 | UTF-8 | ✅ 交易方向、股票代码 |
-| 中信证券 | GBK | ✅ 买卖标志、证券代码 |
-| 华泰证券 | GBK | ✅ 操作、证券代码 |
+### US & International
+| Broker | Format | Notes |
+|--------|--------|-------|
+| Interactive Brokers (IBKR) | Activity Statement CSV | Use "Trades" section |
+| Charles Schwab | Trade History CSV | Export from Transaction History |
+| TD Ameritrade / thinkorswim | Transaction History CSV | |
+| Robinhood | Account CSV export | Download from app |
+| Webull | Transactions CSV | Export from Order History |
 
-详见 [references/csv_formats.md](references/csv_formats.md)
+### Asian Brokers
+| Broker | Format | Notes |
+|--------|--------|-------|
+| Futu / Moomoo (English) | UTF-8 | Side, Symbol, Fill Time |
+| Futu / Moomoo (Chinese) | UTF-8-BOM | 方向, 代码, 成交时间 |
+| Tiger Brokers | UTF-8 | 交易方向, 股票代码 |
 
-## 🎯 评分体系
+See [references/csv_formats.md](references/csv_formats.md) for full field specifications.
 
-8个维度，每个都有权重：
+## 🎯 Scoring System
 
-| 维度 | 权重 | 评估内容 |
-|------|------|----------|
-| 入场质量 | 18% | RSI/MACD/布林带配合度 |
-| 出场质量 | 17% | 止盈止损执行 |
-| 趋势把握 | 14% | 顺势/逆势、ADX强度 |
-| 风险管理 | 12% | R:R比率、MAE/MFE |
-| 市场环境 | 11% | 市场状态适配 |
-| 交易行为 | 11% | 纪律性、冲动检测 |
-| 新闻契合 | 7% | 新闻背景一致性 |
-| 执行质量 | 5% | 滑点、成交效率 |
+8 dimensions, each weighted:
 
-**等级**: A(90+) / B(80-89) / C(70-79) / D(60-69) / F(<60)
+| Dimension | Weight | What it measures |
+|-----------|--------|-----------------|
+| Entry quality | 18% | Timing and technical indicator alignment |
+| Exit quality | 17% | Stop-loss and take-profit execution |
+| Trend alignment | 14% | Trading with or against the trend (ADX) |
+| Risk management | 12% | R:R ratio, MAE/MFE control |
+| Market context | 11% | Market condition fit at entry |
+| Trading behavior | 11% | Discipline, impulse detection |
+| News fit | 7% | Consistency with news/events backdrop |
+| Execution quality | 5% | Slippage, fill efficiency |
 
-详见 [references/scoring_system.md](references/scoring_system.md)
+**Grades**: A (90+) / B (80–89) / C (70–79) / D (60–69) / F (<60)
 
-## 💡 AI洞察
+See [references/scoring_system.md](references/scoring_system.md) for full details.
 
-10个维度深度分析你的交易模式：入场质量、出场时机、风险控制、持仓周期、费用侵蚀、历史对比、模式识别、根因分析、事件关联、改进建议
+## 💡 AI Insights
 
-详见 [references/insight_dimensions.md](references/insight_dimensions.md)
+10-dimension deep analysis of your trading patterns:
 
-## 📊 输出示例
+1. Entry analysis
+2. Exit analysis
+3. Risk control
+4. Holding duration
+5. Fee drag
+6. Historical comparison
+7. Pattern recognition
+8. Root cause analysis
+9. Event correlation
+10. Improvement recommendations
+
+See [references/insight_dimensions.md](references/insight_dimensions.md) for full details.
+
+## 📊 Sample Output
 
 ```
-总持仓: 150笔 | 胜率: 62.5% | 总盈亏: $12,500 | 平均评分: 72.3 (C)
+Total positions: 150  |  Win rate: 62.5%  |  Total P&L: +$12,500  |  Avg score: 72.3 (C)
 
-⚠️ 在超买区域做多 — 入场时RSI=75.2，建议避免RSI>70时追涨
-✅ 止损执行良好 — 平均亏损控制在2.3%，纪律性强
-💡 持仓时间偏短 — 平均持仓2.3天，考虑延长持有优质标的
+⚠️  Buying overbought conditions — RSI was 75.2 at entry; avoid chasing when RSI > 70
+✅  Stop-loss discipline is solid — avg loss controlled at 2.3%
+💡  Holding periods are short — avg 2.3 days; consider letting winners run longer
 ```
-
----
-
-## ☕ 支持作者
-
-如果这个工具帮到了你，请考虑请我喝杯咖啡！
-
-- **GitHub Sponsors**: [@BENZEMA216](https://github.com/sponsors/BENZEMA216)
-- **Buy Me a Coffee**: [buymeacoffee.com/benzema216](https://buymeacoffee.com/benzema216)
-- **USDC (Base)**: `0x...` *(联系获取地址)*
-
-你的支持是我持续改进的动力 🚀
