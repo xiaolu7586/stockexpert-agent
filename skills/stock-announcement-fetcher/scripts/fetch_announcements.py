@@ -38,6 +38,19 @@ def normalize_cn_code(ticker: str) -> str:
     return re.sub(r"\.(SS|SZ)$", "", ticker.strip(), flags=re.IGNORECASE)
 
 
+def trading_days(days: int) -> list[str]:
+    """Return up to `days` recent weekday dates in YYYYMMDD format (newest first)."""
+    result = []
+    d = datetime.now().date()
+    while len(result) < days:
+        if d.weekday() < 5:   # Mon-Fri only
+            result.append(d.strftime("%Y%m%d"))
+        d -= timedelta(days=1)
+        if len(result) >= days or (datetime.now().date() - d).days > days * 3:
+            break
+    return result
+
+
 # ---------------------------------------------------------------------------
 # US: SEC EDGAR
 # ---------------------------------------------------------------------------
@@ -60,27 +73,21 @@ FILING_TYPE_LABELS = {
 
 
 def get_cik(ticker: str) -> str | None:
-    """Resolve ticker to SEC CIK number."""
     import requests
     resp = requests.get(
         "https://www.sec.gov/files/company_tickers.json",
-        headers=SEC_HEADERS,
-        timeout=10,
+        headers=SEC_HEADERS, timeout=10,
     )
     resp.raise_for_status()
-    data = resp.json()
-    for entry in data.values():
+    for entry in resp.json().values():
         if entry.get("ticker", "").upper() == ticker.upper():
             return str(entry["cik_str"]).zfill(10)
     return None
 
 
 def fetch_sec_filings(ticker: str, days: int = 30, filing_type: str | None = None) -> list[dict]:
-    """Fetch recent SEC filings for a US ticker via EDGAR."""
     import requests
-
     print(f"Fetching SEC EDGAR filings for {ticker}...", file=sys.stderr)
-
     cik = get_cik(ticker)
     if not cik:
         print(
@@ -90,14 +97,15 @@ def fetch_sec_filings(ticker: str, days: int = 30, filing_type: str | None = Non
         )
         return []
 
-    url = f"https://data.sec.gov/submissions/CIK{cik}.json"
-    resp = requests.get(url, headers=SEC_HEADERS, timeout=15)
+    resp = requests.get(
+        f"https://data.sec.gov/submissions/CIK{cik}.json",
+        headers=SEC_HEADERS, timeout=15,
+    )
     resp.raise_for_status()
     data = resp.json()
 
     company_name = data.get("name", ticker)
     recent = data.get("filings", {}).get("recent", {})
-
     forms        = recent.get("form", [])
     filed_dates  = recent.get("filingDate", [])
     accessions   = recent.get("accessionNumber", [])
@@ -105,7 +113,6 @@ def fetch_sec_filings(ticker: str, days: int = 30, filing_type: str | None = Non
 
     cutoff = datetime.now() - timedelta(days=days)
     results = []
-
     for form, date_str, accession, doc in zip(forms, filed_dates, accessions, descriptions):
         try:
             filed = datetime.strptime(date_str, "%Y-%m-%d")
@@ -115,21 +122,15 @@ def fetch_sec_filings(ticker: str, days: int = 30, filing_type: str | None = Non
             continue
         if filing_type and form.upper() != filing_type.upper():
             continue
-
         acc_clean = accession.replace("-", "")
-        filing_url = (
-            f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/"
-            f"{acc_clean}/{doc}"
-        )
         results.append({
-            "date": date_str,
-            "type": form,
-            "label": FILING_TYPE_LABELS.get(form, form),
-            "title": f"{form} — {FILING_TYPE_LABELS.get(form, 'SEC Filing')}",
-            "url": filing_url,
+            "date":    date_str,
+            "type":    form,
+            "label":   FILING_TYPE_LABELS.get(form, form),
+            "title":   f"{form} — {FILING_TYPE_LABELS.get(form, 'SEC Filing')}",
+            "url":     f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{acc_clean}/{doc}",
             "company": company_name,
         })
-
     return results
 
 
@@ -155,52 +156,55 @@ def print_sec_results(ticker: str, filings: list[dict]) -> None:
 # A-share: AkShare / Eastmoney
 # ---------------------------------------------------------------------------
 
-def fetch_cn_announcements(ticker: str, days: int = 30, keyword: str | None = None) -> list[dict]:
-    """Fetch A-share announcements via AkShare / Eastmoney."""
+def fetch_cn_announcements(ticker: str, days: int = 7, keyword: str | None = None) -> list[dict]:
+    """
+    Fetch A-share announcements via AkShare.
+    Loops over recent trading days (Mon-Fri) up to `days` days back.
+    Each day query takes ~10s; default is 7 trading days.
+    """
     import akshare as ak
     import pandas as pd
 
     code = normalize_cn_code(ticker)
-    print(f"Fetching A-share announcements for {code} (Eastmoney)...", file=sys.stderr)
+    dates = trading_days(min(days, 7))   # cap at 7 trading days to avoid timeout
+    print(f"Fetching A-share announcements for {code} ({len(dates)} trading days)...", file=sys.stderr)
 
-    today = datetime.now().date()
-    cutoff = today - timedelta(days=days)
+    all_results = []
+    seen_titles = set()
 
-    try:
-        df = ak.stock_notice_report(symbol="全部")
-    except Exception as e:
-        print(f"  WARNING: Failed to fetch announcements: {e}", file=sys.stderr)
-        return []
+    for date_str in dates:
+        try:
+            df = ak.stock_notice_report(symbol="全部", date=date_str)
+        except Exception as e:
+            print(f"  WARNING: Failed for {date_str}: {e}", file=sys.stderr)
+            continue
 
-    if df is None or df.empty:
-        return []
+        if df is None or df.empty:
+            continue
 
-    # Filter by stock code
-    code_cols = [c for c in df.columns if "代码" in c or "code" in c.lower()]
-    if code_cols:
-        df = df[df[code_cols[0]].astype(str).str.contains(code)]
+        # Filter by stock code (column: 代码)
+        df = df[df["代码"].astype(str).str.contains(code, na=False)]
+        if df.empty:
+            continue
 
-    # Filter by date
-    date_cols = [c for c in df.columns if "时间" in c or "日期" in c or "date" in c.lower()]
-    if date_cols:
-        df[date_cols[0]] = pd.to_datetime(df[date_cols[0]], errors="coerce")
-        df = df[df[date_cols[0]].dt.date >= cutoff]
+        # Filter by keyword (column: 公告标题)
+        if keyword:
+            df = df[df["公告标题"].str.contains(keyword, na=False)]
 
-    # Filter by keyword
-    title_cols = [c for c in df.columns if "标题" in c or "title" in c.lower()]
-    if keyword and title_cols:
-        df = df[df[title_cols[0]].str.contains(keyword, na=False)]
+        for _, row in df.iterrows():
+            title = str(row.get("公告标题", ""))
+            if title in seen_titles:
+                continue
+            seen_titles.add(title)
+            date_val = row.get("公告日期", "")
+            all_results.append({
+                "date":  str(date_val)[:10] if date_val else date_str[:4] + "-" + date_str[4:6] + "-" + date_str[6:],
+                "title": title,
+                "type":  str(row.get("公告类型", "")),
+                "url":   str(row.get("网址", "")),
+            })
 
-    results = []
-    for _, row in df.iterrows():
-        results.append({
-            "date": str(row.get(date_cols[0], ""))[:10] if date_cols else "",
-            "title": str(row.get(title_cols[0], "")) if title_cols else str(row.iloc[0]),
-            "type": str(row.get("公告类型", "")),
-            "url": str(row.get("URL", row.get("链接", ""))),
-        })
-
-    return results
+    return all_results
 
 
 def print_cn_results(ticker: str, announcements: list[dict]) -> None:
@@ -237,13 +241,14 @@ Examples:
   uv run --script fetch_announcements.py TSLA --days 7
   uv run --script fetch_announcements.py NVDA --type 10-Q
 
-  # A-share -- Eastmoney
-  uv run --script fetch_announcements.py 600519 --days 7
-  uv run --script fetch_announcements.py 000001.SZ --keyword earnings
+  # A-share -- Eastmoney (queries up to 7 recent trading days)
+  uv run --script fetch_announcements.py 600519
+  uv run --script fetch_announcements.py 000001.SZ --keyword merger
         """,
     )
     parser.add_argument("ticker", help="Stock ticker (e.g. AAPL, TSLA, 600519, 000001.SZ)")
-    parser.add_argument("--days", type=int, default=30, help="Look back N days (default: 30)")
+    parser.add_argument("--days", type=int, default=7,
+                        help="Look back N days (default: 7; A-share capped at 7 trading days)")
     parser.add_argument("--type", dest="filing_type", default=None,
                         help="US only: filing type filter (e.g. 8-K, 10-K, 10-Q)")
     parser.add_argument("--keyword", default=None,
