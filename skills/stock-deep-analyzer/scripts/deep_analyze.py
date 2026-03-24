@@ -70,7 +70,17 @@ def analyze_stock(ticker, period='6mo'):
     print(f"  Current Price: {current_price:.2f} {info.get('currency', 'USD')}")
     print(f"  Change: {change:+.2f} ({change_pct:+.2f}%)")
     print(f"  Volume: {info.get('volume', 0):,}")
-    print(f"  Market Cap: {info.get('marketCap', 0)/1e8:.2f} billion" if info.get('marketCap') else "  Market Cap: N/A")
+    mcap = info.get('marketCap')
+    if mcap:
+        if mcap >= 1e12:
+            mcap_str = f"{mcap/1e12:.2f}T"
+        elif mcap >= 1e9:
+            mcap_str = f"{mcap/1e9:.1f}B"
+        else:
+            mcap_str = f"{mcap/1e6:.0f}M"
+        print(f"  Market Cap: {mcap_str}")
+    else:
+        print("  Market Cap: N/A")
     print(f"  52-Week Range: {info.get('fiftyTwoWeekLow', 'N/A')} - {info.get('fiftyTwoWeekHigh', 'N/A')}")
     print(f"  Beta: {info.get('beta', 'N/A')}")
     print()
