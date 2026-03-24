@@ -140,7 +140,7 @@ uv run --script skills/stock-info-explorer/scripts/yf.py pro AAPL 6mo --rsi --ma
 uv run --script skills/trading-coach/scripts/analyze_trades.py --file path/to/trades.csv
 ```
 
-Supported broker CSV formats: IBKR · Schwab · TD Ameritrade · Robinhood · Webull · Futu · Tiger
+Supported broker CSV formats: IBKR · Schwab · TD Ameritrade · Robinhood · Webull · Futu · Tiger · CITIC · Huatai
 
 ---
 
