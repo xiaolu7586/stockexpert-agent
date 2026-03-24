@@ -77,6 +77,19 @@ uv run --script scripts/yf.py report 600519.SS 6mo
 | Crypto | `COIN-USD` | `BTC-USD`, `ETH-USD` |
 | Forex | `XXXYYY=X` | `EURUSD=X`, `GBPUSD=X` |
 
+## Workflow
+
+When a user requests a quote or analysis:
+
+1. **Resolve the stock name to a ticker**
+   - If the user provides a ticker directly (`TSLA`, `000001.SZ`) → use as-is
+   - If the user provides a company name (English or Chinese, e.g. "Tesla", "特斯拉", "平安银行") → use `web_search` to find the correct ticker symbol
+   - Search query example: `"Tesla stock ticker symbol"` or `"平安银行 A-share ticker code"`
+
+2. **Run the appropriate command** based on the user's request (price / fundamentals / pro / report)
+
+3. **Present results** — output is already formatted; do not reformat or add extra summaries
+
 ## Notes & Limitations
 
 - All indicators are **computed locally** from OHLCV data — no dependency on Yahoo's pre-computed series
