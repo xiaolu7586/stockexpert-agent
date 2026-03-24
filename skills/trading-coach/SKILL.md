@@ -90,12 +90,89 @@ See [references/scoring_system.md](references/scoring_system.md) for full detail
 
 See [references/insight_dimensions.md](references/insight_dimensions.md) for full details.
 
-## 📊 Sample Output
+## 📋 Output Format
+
+**ALWAYS structure the report in exactly these 5 sections, in order:**
+
+---
+
+### Section 1 — FIFO Position Table
+
+List every matched position as a table. Include all positions from the CSV.
+
+| # | Symbol | Direction | Entry Date | Exit Date | Qty | Entry Price | Exit Price | P&L | P&L% |
+|---|--------|-----------|------------|-----------|-----|-------------|------------|-----|------|
+| 1 | AAPL | Long | 2024-01-10 | 2024-01-15 | 100 | $182.50 | $189.30 | +$680 | +3.7% |
+| 2 | TSLA | Long | 2024-01-12 | 2024-01-18 | 50 | $235.00 | $219.50 | -$775 | -6.6% |
+
+---
+
+### Section 2 — Core Statistics
+
+Present as a single-line summary followed by a 2-column stat block:
 
 ```
-Total positions: 150  |  Win rate: 62.5%  |  Total P&L: +$12,500  |  Avg score: 72.3 (C)
-
-⚠️  Buying overbought conditions — RSI was 75.2 at entry; avoid chasing when RSI > 70
-✅  Stop-loss discipline is solid — avg loss controlled at 2.3%
-💡  Holding periods are short — avg 2.3 days; consider letting winners run longer
+Total positions: 12  |  Win rate: 58.3%  |  Total P&L: +$2,840  |  Avg score: 71.2 (C)
 ```
+
+| Metric | Value |
+|--------|-------|
+| Total trades | 12 |
+| Winners / Losers | 7 / 5 |
+| Best trade | NVDA +$1,200 (+8.4%) |
+| Worst trade | TSLA -$775 (-6.6%) |
+| Avg holding period | 4.2 days |
+| Total fees | $124 (4.4% of P&L) |
+
+---
+
+### Section 3 — 8-Dimension Quality Score Table
+
+Score each dimension 0–100 and convert to stars (⭐ scale: <60=⭐, 60-69=⭐⭐, 70-79=⭐⭐⭐, 80-89=⭐⭐⭐⭐, 90+=⭐⭐⭐⭐⭐).
+
+| Dimension | Score | Rating | Key Finding |
+|-----------|-------|--------|-------------|
+| Entry quality | 68 | ⭐⭐⭐ | RSI often elevated at entry |
+| Exit quality | 74 | ⭐⭐⭐ | Stop-loss discipline adequate |
+| Trend alignment | 81 | ⭐⭐⭐⭐ | Mostly trading with trend |
+| Risk management | 55 | ⭐⭐ | R:R ratio below 1.5 on avg |
+| Market context | 72 | ⭐⭐⭐ | Good market timing |
+| Trading behavior | 78 | ⭐⭐⭐ | Some impulse trades detected |
+| News fit | 65 | ⭐⭐⭐ | Limited news correlation |
+| Execution quality | 82 | ⭐⭐⭐⭐ | Low slippage |
+| **Overall** | **72** | **⭐⭐⭐** | **C — Room to improve** |
+
+---
+
+### Section 4 — 10-Dimension AI Insights
+
+Number each insight. Use emoji to indicate type: ✅ positive, ⚠️ warning, ❌ critical, 💡 suggestion.
+Each insight = 1–2 lines: what was found + specific actionable recommendation.
+
+1. ⚠️ **Entry timing** — RSI exceeded 70 on 4 of 12 entries (TSLA, META). Avoid chasing; wait for RSI to pull back below 60.
+2. ✅ **Stop-loss discipline** — Average loss capped at 3.1%. Consistent with plan — maintain this.
+3. ❌ **Risk/reward ratio** — Avg R:R was 0.9:1 (below the 1.5 minimum). Widen profit targets or tighten stops.
+4. ⚠️ **Holding periods too short** — 5 of 7 winners were closed within 2 days. Let winners run; use trailing stops.
+5. 💡 **Fee drag** — Fees consumed 4.4% of gross P&L. Consolidate small trades to reduce commission impact.
+6. 💡 **Historical comparison** — AAPL: 3 previous trades averaged +$420; this trade +$680. Entry discipline improved.
+7. ⚠️ **Pattern: Monday entries underperform** — 3 Monday entries averaged -2.1% vs +1.8% for other days.
+8. ❌ **Root cause — TSLA loss** — Entered against trend (ADX 35, bearish); direction error compounded by no stop.
+9. ⚠️ **Event risk** — 2 positions held through earnings (NVDA, MSFT). Reduce size or hedge before earnings dates.
+10. 💡 **Top improvement** — Fix R:R ratio first: it alone could shift overall performance from C to B within 30 trades.
+
+---
+
+### Section 5 — One-Line Summary
+
+End with a blockquote summary sentence:
+
+> **Bottom line**: Trend alignment is your strength (⭐⭐⭐⭐); risk/reward ratio is your biggest drag — fix it first.
+
+---
+
+**Important formatting rules:**
+- Always render all 5 sections even if data is limited
+- If CSV has fewer than 5 positions, still show all 10 insights (mark low-confidence ones with `(estimated)`)
+- Use actual numbers from the CSV — never use placeholder values in the final output
+- Keep each insight to 1–2 lines max
+- The overall score in Section 3 is the weighted average per scoring_system.md
