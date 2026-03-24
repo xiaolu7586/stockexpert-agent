@@ -93,7 +93,9 @@ def analyze_stock(ticker, period='6mo'):
     pb = info.get('priceToBook')
     roe = info.get('returnOnEquity')
     roa = info.get('returnOnAssets')
-    div_yield = info.get('dividendYield')
+    _div_rate = info.get('trailingAnnualDividendRate', 0)
+    _price = info.get('currentPrice') or info.get('regularMarketPrice')
+    div_yield = (_div_rate / _price * 100) if (_div_rate and _price) else None
     payout_ratio = info.get('payoutRatio')
     eps = info.get('trailingEps')
     book_value = info.get('bookValue')
@@ -104,7 +106,7 @@ def analyze_stock(ticker, period='6mo'):
     print(f"  ROE: {roe*100:.2f}%" if roe else "  ROE: N/A")
     print(f"  ROA: {roa*100:.2f}%" if roa else "  ROA: N/A")
     print(f"  Profit Margin: {profit_margin*100:.2f}%" if profit_margin else "  Profit Margin: N/A")
-    print(f"  Dividend Yield: {div_yield*100:.2f}%" if div_yield else "  Dividend Yield: N/A")
+    print(f"  Dividend Yield: {div_yield:.4f}%" if div_yield else "  Dividend Yield: N/A")
     print(f"  Payout Ratio: {payout_ratio*100:.2f}%" if payout_ratio else "  Payout Ratio: N/A")
     print(f"  EPS: {eps:.2f}" if eps else "  EPS: N/A")
     print(f"  Book Value: {book_value:.2f}" if book_value else "  Book Value: N/A")
@@ -115,7 +117,7 @@ def analyze_stock(ticker, period='6mo'):
     if pb and pb < 3: value_score += 2
     if pb and pb < 1: value_score += 1  # Bonus for below book
     if roe and roe > 0.10: value_score += 2
-    if div_yield and div_yield > 0.02: value_score += 2
+    if div_yield and div_yield > 2.0: value_score += 2
     if profit_margin and profit_margin > 0.10: value_score += 1
     
     print(f"\n  Value Score: {value_score}/10")
