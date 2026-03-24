@@ -21,12 +21,16 @@ Transform your broker's CSV trade history into a **professional review report** 
 - 🎯 **8-Dimension Scoring** — Entry, exit, trend, risk, market context, behavior, news fit, execution
 - 💡 **AI Insights** — 10-dimension analysis that surfaces your trading blind spots
 
-## 🚀 Quick Start
+## 🚀 How to Use
 
-```bash
-# Review your trades
-uv run --script skills/trading-coach/scripts/analyze_trades.py --file path/to/trades.csv
-```
+Upload or paste your broker CSV export and ask the agent to review your trades. The agent reads the CSV directly — no separate script needed.
+
+**Example prompts:**
+- "Review my trades" + attach CSV
+- "Analyze my IBKR trading history"
+- "帮我复盘这份交易记录"
+
+The agent will auto-detect your broker format, apply FIFO matching, score each position, and generate improvement insights.
 
 ## 📈 Supported Brokers
 
