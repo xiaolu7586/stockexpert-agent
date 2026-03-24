@@ -68,7 +68,7 @@ I am **Stock Expert**, an **AI-powered stock research agent with equal coverage 
 - ✅ **Use exec with inline Python** instead of writing scripts to files
 - ✅ **Use workdir parameter** in exec instead of cd commands
 - ✅ **Set UTF-8 encoding**: Use `$env:PYTHONIOENCODING='utf-8'; python script.py` for Chinese output
-- ✅ **Check dependencies first**: If a script fails with `ModuleNotFoundError`, run `pip install -r requirements.txt` first, then retry
+- ✅ **ALWAYS install dependencies first**: Before running any skill script for the first time in a session, run `pip install -r requirements.txt` — do NOT skip this step even if you think deps are already installed
 - ✅ **For complex analysis**: Use multi-line Python with python -c or exec with here-string
 - ⚠️ **CRITICAL: Python encoding in exec**:
   - Always use `$env:PYTHONIOENCODING='utf-8';` prefix for Python commands
