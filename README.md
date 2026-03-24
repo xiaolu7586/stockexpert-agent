@@ -139,8 +139,8 @@ Never miss a material event — automatically routed by market:
 
 ```bash
 # Get latest SEC filings for a US stock
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py TSLA --days 7
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py TSLA --days 7
 ```
 
 **A-share → Eastmoney / AkShare**
@@ -149,8 +149,8 @@ uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py
 
 ```bash
 # Get announcements for an A-share stock
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 000001.SZ --days 7
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py 000001.SZ --days 7
 ```
 
 The script **auto-detects** the market from ticker format — no manual switching needed.
@@ -185,17 +185,21 @@ Upload your broker's CSV export and get an 8-dimension quality score + 10-dimens
 
 ## ⚙️ Python Dependencies
 
-All scripts use `uv` for automatic dependency management (recommended). Or install manually:
+Install all dependencies before first use:
+
+```bash
+pip install -r requirements.txt
+```
+
+Or install manually by skill:
 
 ```bash
 # stock-deep-analyzer & stock-info-explorer
-pip install yfinance pandas numpy
+pip install yfinance pandas numpy rich plotille
 
 # stock-announcement-fetcher
-pip install akshare pandas requests
+pip install akshare pandas requests PyPDF2
 ```
-
-> Recommended: use [uv](https://github.com/astral-sh/uv) — dependencies install on demand, no pre-setup needed.
 
 ---
 
@@ -205,42 +209,42 @@ pip install akshare pandas requests
 
 ```bash
 # Deep analysis
-uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py NVDA
-uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL --period 1y
-uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 600519.SS
+python3 skills/stock-deep-analyzer/scripts/deep_analyze.py NVDA
+python3 skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL --period 1y
+python3 skills/stock-deep-analyzer/scripts/deep_analyze.py 600519.SS
 
 # Real-time quote
-uv run --script skills/stock-info-explorer/scripts/yf.py price TSLA
-uv run --script skills/stock-info-explorer/scripts/yf.py price 000001.SZ
+python3 skills/stock-info-explorer/scripts/yf.py price TSLA
+python3 skills/stock-info-explorer/scripts/yf.py price 000001.SZ
 
 # Technical analysis
-uv run --script skills/stock-info-explorer/scripts/yf.py pro NVDA 6mo --rsi --macd --bb
+python3 skills/stock-info-explorer/scripts/yf.py pro NVDA 6mo --rsi --macd --bb
 
 # SEC filings (US)
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL --days 30
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL --days 30
 
 # A-share announcements
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
 ```
 
 ### Windows (PowerShell)
 
 ```powershell
 # Deep analysis
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py NVDA
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 600519.SS --period 1y
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-deep-analyzer/scripts/deep_analyze.py NVDA
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-deep-analyzer/scripts/deep_analyze.py 600519.SS --period 1y
 
 # Real-time quote
-uv run --script skills/stock-info-explorer/scripts/yf.py price TSLA
+python3 skills/stock-info-explorer/scripts/yf.py price TSLA
 
 # Technical analysis
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-info-explorer/scripts/yf.py pro 000001.SZ 6mo --rsi --macd --bb
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-info-explorer/scripts/yf.py pro 000001.SZ 6mo --rsi --macd --bb
 
 # SEC filings (US)
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL --days 30
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL --days 30
 
 # A-share announcements
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
 ```
 
 ---
@@ -293,4 +297,5 @@ stockexpert-agent/
             ├── scoring_system.md                     # 8-dimension scoring system
             └── insight_dimensions.md                 # 10-dimension AI insight guide
 ```
+
 
