@@ -279,15 +279,3 @@ stockexpert-agent/
             └── insight_dimensions.md                 # 10-dimension AI insight guide
 ```
 
----
-
-## 📌 Ticker Format Reference
-
-| Market | Format | Examples |
-|---|---|---|
-| US stocks | `TICKER` | `AAPL`, `TSLA`, `NVDA`, `MSFT`, `AMZN` |
-| A-share (Shanghai) | `XXXXXX.SS` | `600519.SS`, `601318.SS` |
-| A-share (Shenzhen) | `XXXXXX.SZ` | `000001.SZ`, `002594.SZ` |
-| Hong Kong | `XXXX.HK` | `0700.HK`, `9988.HK` |
-| Crypto | `COIN-USD` | `BTC-USD`, `ETH-USD` |
-| Forex | `XXXYYY=X` | `EURUSD=X`, `GBPUSD=X` |
