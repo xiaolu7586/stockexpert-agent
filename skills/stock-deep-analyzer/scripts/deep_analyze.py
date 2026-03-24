@@ -16,11 +16,13 @@ import numpy as np
 from datetime import datetime
 
 def calculate_rsi(data, period=14):
-    """Calculate RSI indicator"""
+    """Calculate RSI using Wilder's EMA smoothing (industry standard)"""
     delta = data.diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
-    rs = gain / loss
+    gain = delta.clip(lower=0)
+    loss = -delta.clip(upper=0)
+    avg_gain = gain.ewm(alpha=1/period, adjust=False, min_periods=period).mean()
+    avg_loss = loss.ewm(alpha=1/period, adjust=False, min_periods=period).mean()
+    rs = avg_gain / avg_loss.replace(0, float('nan'))
     rsi = 100 - (100 / (1 + rs))
     return rsi
 
