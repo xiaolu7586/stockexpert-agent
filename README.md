@@ -17,7 +17,6 @@ Stock Expert is built with North American investors as a first-class use case:
 | Corporate announcements & filings | ✅ SEC EDGAR (8-K, 10-K, 10-Q, S-1...) | ✅ Eastmoney / AkShare |
 | Technical indicators (RSI / MACD / BB / VWAP) | ✅ | ✅ |
 | Trade review from broker CSV | ✅ IBKR, Schwab, TD Ameritrade, Robinhood, Webull | ✅ Futu, Tiger |
-| Ticker format | `AAPL`, `TSLA`, `NVDA` | `600519.SS`, `000001.SZ` |
 
 Data sources: **Yahoo Finance** (quotes & analysis) · **SEC EDGAR** (US filings, free, no API key) · **AkShare / Eastmoney** (A-share announcements)
 
@@ -248,12 +247,12 @@ $env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-announcement-fetcher
 
 ## 🔧 Platform Capabilities Required
 
-The following platform-level features exist in EasyClaw but are not yet implemented in ClawDI. Implementing them will significantly improve this agent's output quality.
+The following platform-level features are not yet implemented in ClawDI. Implementing them will significantly improve this agent's output quality.
 
 | Capability | What it does |
 |---|---|
 | **Skill scanning mandate** | Forces the agent to fully load SKILL.md and all reference files before every reply — required for structured trading-coach output (tables, star ratings, 10-dimension insights) |
-| **Reply formatting rules** | Injects output structure directives (section headers, tables, file-send via `MEDIA:`, silent mode via `NO_REPLY`) — the primary reason EasyClaw produces richer reports than plain text |
+| **Reply formatting rules** | Injects output structure directives (section headers, tables, file-send via `MEDIA:`, silent mode via `NO_REPLY`) — required for structured section headers, tables, file-send directives, and silent-mode protocol |
 | **Workspace file auto-load** | Automatically injects SOUL.md, IDENTITY.md, USER.md into session context at startup |
 | **Runtime metadata injection** | Provides current datetime/timezone, model name, OS, and channel type (webchat/API/etc.) to the agent each session |
 | **Safety rules** | Injects human-oversight and no-self-preservation constraints at the platform level |
