@@ -24,12 +24,14 @@ from datetime import datetime, timedelta
 # ---------------------------------------------------------------------------
 
 def detect_market(ticker: str) -> str:
-    """Return 'us' or 'cn' based on ticker format."""
+    """Return 'us', 'cn', or 'hk' based on ticker format."""
     ticker = ticker.strip().upper()
     if re.match(r"^\d{6}(\.SS|\.SZ)?$", ticker, re.IGNORECASE):
         return "cn"
     if ticker.endswith(".SS") or ticker.endswith(".SZ"):
         return "cn"
+    if ticker.endswith(".HK") or re.match(r"^\d{4}\.HK$", ticker, re.IGNORECASE):
+        return "hk"
     return "us"
 
 
@@ -259,7 +261,15 @@ Examples:
 
     market = detect_market(args.ticker)
 
-    if market == "us":
+    if market == "hk":
+        print(
+            f"\nHK stocks ({args.ticker}) are not supported by this fetcher.\n"
+            "For HK market news, use stock-info-explorer or check HKEX directly:\n"
+            "  https://www.hkexnews.hk/",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    elif market == "us":
         results = fetch_sec_filings(args.ticker, days=args.days, filing_type=args.filing_type)
         if args.fmt == "json":
             import json
