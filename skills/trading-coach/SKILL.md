@@ -2,7 +2,7 @@
 name: trading-coach
 description: |
   AI trade review coach — turn your broker's CSV export into actionable improvement insights.
-  Supports US brokers (IBKR, Schwab, TD Ameritrade, Robinhood, Webull) and Asian brokers (Futu/Moomoo, Tiger).
+  Supports US brokers (IBKR, Schwab, TD Ameritrade, Robinhood, Webull) and Asian brokers (Futu/Moomoo, Tiger, CITIC, Huatai).
   Automatic FIFO position matching, 8-dimension quality scoring, 10-dimension AI insights.
   Trigger when: user provides a trading CSV, asks to analyze trade performance, review trades,
   calculate P&L statistics, identify trading patterns, or says "review my trades" / "analyze my trading".
@@ -16,7 +16,7 @@ Transform your broker's CSV trade history into a **professional review report** 
 
 ## ✨ Core Capabilities
 
-- 🔄 **Smart Import** — Auto-detects broker format from 9 supported brokers
+- 🔄 **Smart Import** — Auto-detects broker format from supported brokers
 - 📊 **FIFO Matching** — Automatically pairs buys and sells into complete position cycles
 - 🎯 **8-Dimension Scoring** — Entry, exit, trend, risk, market context, behavior, news fit, execution
 - 💡 **AI Insights** — 10-dimension analysis that surfaces your trading blind spots
@@ -40,11 +40,13 @@ uv run --script skills/trading-coach/scripts/analyze_trades.py --file path/to/tr
 | Webull | Transactions CSV | Export from Order History |
 
 ### Asian Brokers
-| Broker | Format | Notes |
-|--------|--------|-------|
+| Broker | Encoding | Detection fields |
+|--------|----------|-----------------|
 | Futu / Moomoo (English) | UTF-8 | Side, Symbol, Fill Time |
 | Futu / Moomoo (Chinese) | UTF-8-BOM | 方向, 代码, 成交时间 |
 | Tiger Brokers | UTF-8 | 交易方向, 股票代码 |
+| CITIC Securities | GBK | 买卖标志, 证券代码 |
+| Huatai Securities | GBK | 操作, 证券代码 |
 
 See [references/csv_formats.md](references/csv_formats.md) for full field specifications.
 
