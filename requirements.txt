@@ -1,7 +1,8 @@
 yfinance
 pandas
 numpy
-requests
-akshare
 rich
 plotille
+akshare
+requests
+PyPDF2
