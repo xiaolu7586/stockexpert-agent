@@ -59,7 +59,7 @@ I am **Stock Expert**, an **AI-powered stock research agent with equal coverage 
 - **PNG charts are DISABLED** in stock-info-explorer skill
 - All outputs are **text-based reports only**
 - Do NOT attempt to generate .png files or display charts
-- Use `uv run --script scripts/yf.py report <ticker> 6mo` for comprehensive text analysis
+- Use `python3 skills/stock-info-explorer/scripts/yf.py report <ticker> 6mo` for comprehensive text analysis
 - ❌ **CRITICAL: write tool is BROKEN** - causes immediate termination
 - ✅ **Alternative**: Use `python -c "..."` for inline Python code instead of writing .py files
 
@@ -68,7 +68,7 @@ I am **Stock Expert**, an **AI-powered stock research agent with equal coverage 
 - ✅ **Use exec with inline Python** instead of writing scripts to files
 - ✅ **Use workdir parameter** in exec instead of cd commands
 - ✅ **Set UTF-8 encoding**: Use `$env:PYTHONIOENCODING='utf-8'; python script.py` for Chinese output
-- ✅ **Check dependencies first**: Verify libraries exist before running scripts
+- ✅ **Check dependencies first**: If a script fails with `ModuleNotFoundError`, run `pip install -r requirements.txt` first, then retry
 - ✅ **For complex analysis**: Use multi-line Python with python -c or exec with here-string
 - ⚠️ **CRITICAL: Python encoding in exec**:
   - Always use `$env:PYTHONIOENCODING='utf-8';` prefix for Python commands
@@ -188,16 +188,16 @@ Deep analysis requests:
 
 **Command (macOS/Linux):**
 ```bash
-uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 601288.SS
-uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL --period 1y
+python3 skills/stock-deep-analyzer/scripts/deep_analyze.py 601288.SS
+python3 skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL --period 1y
 ```
 
 **Command (Windows PowerShell):**
 ```powershell
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 601288.SS
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-deep-analyzer/scripts/deep_analyze.py 601288.SS
 
 # With custom period
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL --period 1y
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL --period 1y
 ```
 
 **Output includes:**
@@ -247,20 +247,20 @@ Keyword filtering:
 **Commands (macOS/Linux):**
 ```bash
 # US — SEC EDGAR
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py TSLA --days 7
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py TSLA --days 7
 
 # A-share — Eastmoney
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
 ```
 
 **Commands (Windows PowerShell):**
 ```powershell
 # US (no encoding prefix needed)
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL --days 30
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL --days 30
 
 # A-share (encoding prefix needed for Chinese output)
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
 ```
 
 **Data sources**: SEC EDGAR (US, free, no API key) · Eastmoney via AkShare (A-share, free)
@@ -397,7 +397,7 @@ Record in `MEMORY.md`:
 4. Identify high-priority opportunities (🔥) or risks (⚠️)
 
 **🎯 Stock Deep-Dive (On-Demand):** ⭐ USE stock-deep-analyzer
-1. Run comprehensive analysis: `uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py <ticker>`
+1. Run comprehensive analysis: `python3 skills/stock-deep-analyzer/scripts/deep_analyze.py <ticker>`
 2. Get multi-dimensional scoring (value + technical + growth + financial)
 3. Receive overall rating (/10) + investment strategies
 4. Get specific price levels (support/resistance/targets)
@@ -436,55 +436,55 @@ Record in `MEMORY.md`:
 macOS/Linux:
 ```bash
 # A-share deep analysis
-uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 601288.SS
+python3 skills/stock-deep-analyzer/scripts/deep_analyze.py 601288.SS
 
 # US stock deep analysis
-uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL
+python3 skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL
 
 # Custom period
-uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 601606.SS --period 1y
+python3 skills/stock-deep-analyzer/scripts/deep_analyze.py 601606.SS --period 1y
 ```
 
 Windows PowerShell:
 ```powershell
-# A股深度分析
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 601288.SS
+# A-share deep analysis
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-deep-analyzer/scripts/deep_analyze.py 601288.SS
 
-# 美股深度分析
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL
+# US stock deep analysis
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-deep-analyzer/scripts/deep_analyze.py AAPL
 
-# 指定分析周期
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-deep-analyzer/scripts/deep_analyze.py 601606.SS --period 1y
+# Custom analysis period
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-deep-analyzer/scripts/deep_analyze.py 601606.SS --period 1y
 ```
 
 **Real-time quotes:**
 ```bash
 # US stocks
-uv run --script skills/stock-info-explorer/scripts/yf.py price AAPL
+python3 skills/stock-info-explorer/scripts/yf.py price AAPL
 # A-share (Shanghai)
-uv run --script skills/stock-info-explorer/scripts/yf.py price 600519.SS
+python3 skills/stock-info-explorer/scripts/yf.py price 600519.SS
 # A-share (Shenzhen)
-uv run --script skills/stock-info-explorer/scripts/yf.py price 000001.SZ
+python3 skills/stock-info-explorer/scripts/yf.py price 000001.SZ
 ```
 
 **Single technical indicators:**
 ```bash
-uv run --script skills/stock-info-explorer/scripts/yf.py pro 000001.SZ 6mo --rsi --macd --bb
+python3 skills/stock-info-explorer/scripts/yf.py pro 000001.SZ 6mo --rsi --macd --bb
 ```
 
 **Announcements & Filings:**
 ```bash
 # US — SEC EDGAR
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py AAPL
 
 # A-share — Eastmoney
-uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
+python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
 ```
 
 Windows PowerShell:
 ```powershell
 # A-share (encoding needed)
-$env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
+$env:PYTHONIOENCODING='utf-8'; python3 skills/stock-announcement-fetcher/scripts/fetch_announcements.py 600519 --days 7
 ```
 
 ### Ticker Format Reference
@@ -529,3 +529,4 @@ $env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-announcement-fetcher
 ---
 
 **Remember**: I provide **data-driven, opportunity-focused** analysis for both US and A-share markets. I emphasize potential returns while clearly acknowledging risks. Final investment decisions are always yours.
+
