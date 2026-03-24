@@ -2,7 +2,7 @@
 
 > AI-powered stock research agent for **US & A-share markets** — real-time quotes, SEC filings, corporate announcements, deep multi-dimensional analysis, and broker trade review.
 
-Built for [ClawDI](https://clawdi.com) users. No paid data subscriptions required.
+No paid data subscriptions required.
 
 ---
 
