@@ -121,7 +121,9 @@ def show_fundamentals(symbol, ticker, info):
 def show_history(symbol, ticker, period="1mo"):
     hist = ticker.history(period=period)
     chart = plotille.plot(list(range(len(hist))), hist['Close'].tolist(), height=15, width=60)
-    console.print(Panel(chart, title=f"Chart: {symbol}", border_style="green"))
+    date_from = hist.index[0].strftime('%Y-%m-%d')
+    date_to = hist.index[-1].strftime('%Y-%m-%d')
+    console.print(Panel(chart + f"\n  {date_from} → {date_to}", title=f"Chart: {symbol}", border_style="green"))
 
 def save_pro_chart(symbol, ticker, period="3mo", chart_type='candle', indicators=None):
     """
@@ -244,13 +246,14 @@ def show_report(symbol, ticker, info, period="6mo"):
     macd_val = macd.iloc[-1]
     macd_sig = sig.iloc[-1]
 
-    # 4. Generate technical indicator section
-    indicators = {'rsi': True, 'macd': True, 'bb': True}
-    save_pro_chart(symbol, ticker, period=period, indicators=indicators)
-
-    # 5. Summary block
+    # 4. Summary block
     sign = "+" if change >= 0 else ""
     mcap_str = f"{mcap/1e12:.2f}T" if mcap >= 1e12 else (f"{mcap/1e9:.1f}B" if mcap >= 1e9 else f"{mcap/1e6:.0f}M")
+    rsi_status = 'Overbought' if rsi_val > 70 else ('Oversold' if rsi_val < 30 else 'Neutral')
+    bb_trend = 'Near upper band' if bb_pos > 80 else ('Near lower band' if bb_pos < 20 else 'Mid-range')
+    macd_trend = 'Bullish' if macd_val > macd_sig else 'Bearish'
+    roe = info.get('returnOnEquity')
+    margin = info.get('profitMargins')
 
     print(f"\n{'='*60}")
     print(f"{info.get('longName', symbol)} — Comprehensive Analysis Report")
@@ -262,7 +265,18 @@ def show_report(symbol, ticker, info, period="6mo"):
     print(f"  Market Cap:    {mcap_str}  |  P/E: {pe}")
     print()
 
-    print(f"\n{'='*60}\n")
+    print(f"[Technical Signals]")
+    print(f"  RSI(14):  {rsi_val:.2f} ({rsi_status})")
+    print(f"  BB Pos:   {bb_pos:.1f}% ({bb_trend})")
+    print(f"  MACD:     {macd_val:.3f} ({macd_trend})")
+    print()
+
+    print(f"[Fundamentals]")
+    print(f"  ROE:           {roe*100:.2f}%" if roe else "  ROE:           N/A")
+    print(f"  Profit Margin: {margin*100:.2f}%" if margin else "  Profit Margin: N/A")
+    print()
+
+    print(f"{'='*60}\n")
 
 def main():
     if len(sys.argv) < 2: sys.exit(1)
