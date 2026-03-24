@@ -152,6 +152,50 @@
 
 ---
 
+---
+
+### CITIC Securities — `citic_cn`
+
+**How to export**: Trading client → Account → Trade History → Export  
+**Encoding**: GBK  
+**Delimiter**: Comma
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| 委托方向 | Trade direction | 买入 / 卖出 |
+| 证券代码 | Stock code (A-share) | 600519 |
+| 证券名称 | Company name | 贵州茅台 |
+| 成交价格 | Fill price | 1680.00 |
+| 成交数量 | Shares filled | 100 |
+| 成交金额 | Total amount | 168000.00 |
+| 成交时间 | Fill time | 2024-01-15 09:30:00 |
+| 手续费 | Commission | 5.04 |
+| 过户费 | Transfer fee | 0.34 |
+| 印花税 | Stamp duty | 168.00 |
+| 席位代码 | Branch code | 0010 |
+
+---
+
+### Huatai Securities — `huatai_cn`
+
+**How to export**: Huatai client → Account → Trade Records → Export  
+**Encoding**: GBK  
+**Delimiter**: Comma
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| 买卖方向 | Trade direction | 买入 / 卖出  (or 1 / 2) |
+| 证券代码 | Stock code (A-share) | 000001 |
+| 证券名称 | Company name | 平安银行 |
+| 成交价格 | Fill price | 12.50 |
+| 成交数量 | Shares filled | 1000 |
+| 成交金额 | Total amount | 12500.00 |
+| 成交时间 | Fill time | 2024-01-15 09:30:00 |
+| 佣金 | Commission | 3.75 |
+| 过户费 | Transfer fee | 0.13 |
+| 经手费 | Exchange handling fee | 0.50 |
+| 证管费 | CSRC regulatory fee | 0.13 |
+
 ## Standard Internal Fields
 
 After import, all formats are normalized to these standard fields:
