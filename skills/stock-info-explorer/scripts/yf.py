@@ -120,7 +120,7 @@ def show_fundamentals(symbol, ticker, info):
 
 def show_history(symbol, ticker, period="1mo"):
     hist = ticker.history(period=period)
-    chart = plotille.plot(hist.index, hist['Close'], height=15, width=60)
+    chart = plotille.plot(list(range(len(hist))), hist['Close'].tolist(), height=15, width=60)
     console.print(Panel(chart, title=f"Chart: {symbol}", border_style="green"))
 
 def save_pro_chart(symbol, ticker, period="3mo", chart_type='candle', indicators=None):
@@ -262,14 +262,6 @@ def show_report(symbol, ticker, info, period="6mo"):
     print(f"  Market Cap:    {mcap_str}  |  P/E: {pe}")
     print()
 
-    print(f"[Technical Signals]")
-    rsi_status = 'Overbought' if rsi_val > 70 else ('Oversold' if rsi_val < 30 else 'Neutral')
-    bb_status = 'Near upper band' if bb_pos > 80 else ('Near lower band' if bb_pos < 20 else 'Near middle band')
-    macd_status = 'Bullish' if macd_val > macd_sig else 'Bearish'
-
-    print(f"  RSI(14):          {rsi_val:.1f} ({rsi_status})")
-    print(f"  Bollinger Bands:  {bb_pos:.1f}% ({bb_status})")
-    print(f"  MACD:             {macd_val:.2f}  Signal: {macd_sig:.2f} ({macd_status})")
     print(f"\n{'='*60}\n")
 
 def main():
