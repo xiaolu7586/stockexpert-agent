@@ -6,8 +6,6 @@
 #   "rich",
 #   "pandas",
 #   "plotille",
-#   "matplotlib",
-#   "mplfinance"
 # ]
 # ///
 
@@ -15,12 +13,10 @@ import sys
 import yfinance as yf
 import pandas as pd
 import plotille
-import matplotlib.pyplot as plt
-import mplfinance as mpf
 from rich.console import Console
 from rich.table import Table
 
-# 设置UTF-8编码
+# Set UTF-8 encoding for A-share compatibility
 if sys.stdout.encoding != 'utf-8':
     import codecs
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
@@ -62,7 +58,6 @@ def calc_bbands(close: pd.Series, window: int = 20, n_std: float = 2.0):
 
 
 def calc_vwap(df: pd.DataFrame) -> pd.Series:
-    # VWAP over the provided window (cumulative over the selected period)
     typical_price = (df['High'] + df['Low'] + df['Close']) / 3
     vol = df['Volume'].fillna(0)
     tpv = (typical_price * vol).cumsum()
@@ -130,7 +125,7 @@ def show_history(symbol, ticker, period="1mo"):
 
 def save_pro_chart(symbol, ticker, period="3mo", chart_type='candle', indicators=None):
     """
-    替代PNG图表生成 - 改为生成文本分析报告
+    Generate text-based technical analysis report (PNG charts disabled).
     """
     indicators = indicators or {}
     hist = ticker.history(period=period)
@@ -138,92 +133,91 @@ def save_pro_chart(symbol, ticker, period="3mo", chart_type='candle', indicators
         return None
 
     close = hist['Close']
-    
-    # 计算所有技术指标
+
     output_lines = []
     output_lines.append(f"\n{'='*60}")
-    output_lines.append(f"{symbol} 技术分析报告 ({period})")
+    output_lines.append(f"{symbol} Technical Analysis Report ({period})")
     output_lines.append(f"{'='*60}\n")
-    
-    # 价格信息
+
+    # Price range
     current_price = close.iloc[-1]
     period_high = hist['High'].max()
     period_low = hist['Low'].min()
     period_start = close.iloc[0]
     period_change = ((current_price - period_start) / period_start) * 100
-    
-    output_lines.append(f"[价格区间]")
-    output_lines.append(f"  当前价格: {current_price:.2f}")
-    output_lines.append(f"  期间高点: {period_high:.2f}")
-    output_lines.append(f"  期间低点: {period_low:.2f}")
-    output_lines.append(f"  期间涨幅: {period_change:+.2f}%")
+
+    output_lines.append(f"[Price Range]")
+    output_lines.append(f"  Current:       {current_price:.2f}")
+    output_lines.append(f"  Period High:   {period_high:.2f}")
+    output_lines.append(f"  Period Low:    {period_low:.2f}")
+    output_lines.append(f"  Period Change: {period_change:+.2f}%")
     output_lines.append("")
-    
+
     # RSI
     if indicators.get('rsi'):
         rsi = calc_rsi(close)
         rsi_val = rsi.iloc[-1]
-        rsi_status = '超买' if rsi_val > 70 else ('超卖' if rsi_val < 30 else '中性')
+        rsi_status = 'Overbought' if rsi_val > 70 else ('Oversold' if rsi_val < 30 else 'Neutral')
         output_lines.append(f"[RSI(14)]")
-        output_lines.append(f"  当前值: {rsi_val:.2f}")
-        output_lines.append(f"  状态: {rsi_status}")
+        output_lines.append(f"  Value:  {rsi_val:.2f}")
+        output_lines.append(f"  Status: {rsi_status}")
         output_lines.append("")
-    
-    # 布林带
+
+    # Bollinger Bands
     if indicators.get('bb'):
         upper, mid, lower = calc_bbands(close)
         bb_upper = upper.iloc[-1]
         bb_mid = mid.iloc[-1]
         bb_lower = lower.iloc[-1]
         bb_pos = ((current_price - bb_lower) / (bb_upper - bb_lower)) * 100
-        bb_status = '上轨附近' if bb_pos > 80 else ('下轨附近' if bb_pos < 20 else '中轨附近')
-        output_lines.append(f"[布林带(20,2)]")
-        output_lines.append(f"  上轨: {bb_upper:.2f}")
-        output_lines.append(f"  中轨: {bb_mid:.2f}")
-        output_lines.append(f"  下轨: {bb_lower:.2f}")
-        output_lines.append(f"  位置: {bb_pos:.1f}% ({bb_status})")
+        bb_status = 'Near upper band' if bb_pos > 80 else ('Near lower band' if bb_pos < 20 else 'Near middle band')
+        output_lines.append(f"[Bollinger Bands(20,2)]")
+        output_lines.append(f"  Upper:    {bb_upper:.2f}")
+        output_lines.append(f"  Middle:   {bb_mid:.2f}")
+        output_lines.append(f"  Lower:    {bb_lower:.2f}")
+        output_lines.append(f"  Position: {bb_pos:.1f}% ({bb_status})")
         output_lines.append("")
-    
+
     # MACD
     if indicators.get('macd'):
         macd, sig, histo = calc_macd(close)
         macd_val = macd.iloc[-1]
         macd_sig = sig.iloc[-1]
         macd_histo = histo.iloc[-1]
-        macd_status = '多头' if macd_val > macd_sig else '空头'
+        macd_status = 'Bullish' if macd_val > macd_sig else 'Bearish'
         output_lines.append(f"[MACD(12,26,9)]")
-        output_lines.append(f"  MACD线: {macd_val:.3f}")
-        output_lines.append(f"  信号线: {macd_sig:.3f}")
-        output_lines.append(f"  柱状图: {macd_histo:.3f}")
-        output_lines.append(f"  趋势: {macd_status}")
+        output_lines.append(f"  MACD:      {macd_val:.3f}")
+        output_lines.append(f"  Signal:    {macd_sig:.3f}")
+        output_lines.append(f"  Histogram: {macd_histo:.3f}")
+        output_lines.append(f"  Trend:     {macd_status}")
         output_lines.append("")
-    
+
     # VWAP
     if indicators.get('vwap'):
         vwap = calc_vwap(hist)
         vwap_val = vwap.iloc[-1]
-        vwap_status = '高于' if current_price > vwap_val else '低于'
+        vwap_status = 'above' if current_price > vwap_val else 'below'
         output_lines.append(f"[VWAP]")
-        output_lines.append(f"  VWAP值: {vwap_val:.2f}")
-        output_lines.append(f"  当前价格{vwap_status}VWAP")
+        output_lines.append(f"  VWAP:   {vwap_val:.2f}")
+        output_lines.append(f"  Price is {vwap_status} VWAP")
         output_lines.append("")
-    
+
     # ATR
     if indicators.get('atr'):
         atr = calc_atr(hist)
         atr_val = atr.iloc[-1]
         atr_pct = (atr_val / current_price) * 100
         output_lines.append(f"[ATR(14)]")
-        output_lines.append(f"  ATR值: {atr_val:.2f}")
-        output_lines.append(f"  占价格: {atr_pct:.2f}%")
+        output_lines.append(f"  ATR:            {atr_val:.2f}")
+        output_lines.append(f"  % of price:     {atr_pct:.2f}%")
         output_lines.append("")
-    
+
     output_lines.append(f"{'='*60}\n")
-    
+
     report_text = '\n'.join(output_lines)
     print(report_text)
-    
-    return "TEXT_REPORT"  # 返回标识表示已生成文本报告
+
+    return "TEXT_REPORT"
 
 def show_report(symbol, ticker, info, period="6mo"):
     # 1. Price & Change Summary
@@ -231,17 +225,17 @@ def show_report(symbol, ticker, info, period="6mo"):
     prev_close = info.get('regularMarketPreviousClose') or info.get('previousClose')
     change = current - prev_close if current and prev_close else 0
     pct_change = (change / prev_close) * 100 if prev_close else 0
-    
+
     # 2. Fundamentals Summary
     mcap = info.get('marketCap', 0)
     pe = info.get('forwardPE', 'N/A')
-    
+
     # 3. Technical Indicators (latest)
     hist = ticker.history(period=period)
     if hist.empty:
         print("No history data for report")
         return
-    
+
     close = hist['Close']
     rsi_val = calc_rsi(close).iloc[-1]
     upper, mid, lower = calc_bbands(close)
@@ -249,37 +243,38 @@ def show_report(symbol, ticker, info, period="6mo"):
     macd, sig, histo = calc_macd(close)
     macd_val = macd.iloc[-1]
     macd_sig = sig.iloc[-1]
-    
-    # 4. Generate text report (with main indicators)
+
+    # 4. Generate technical indicator section
     indicators = {'rsi': True, 'macd': True, 'bb': True}
     save_pro_chart(symbol, ticker, period=period, indicators=indicators)
-    
-    # 5. Build text summary
+
+    # 5. Summary block
     sign = "+" if change >= 0 else ""
-    
+    mcap_str = f"{mcap/1e12:.2f}T" if mcap >= 1e12 else (f"{mcap/1e9:.1f}B" if mcap >= 1e9 else f"{mcap/1e6:.0f}M")
+
     print(f"\n{'='*60}")
-    print(f"{info.get('longName', symbol)} - 综合分析报告")
+    print(f"{info.get('longName', symbol)} — Comprehensive Analysis Report")
     print(f"{'='*60}\n")
-    
-    print(f"[行情概要]")
-    print(f"  当前价格: {current:,.2f} {info.get('currency', '')}")
-    print(f"  涨跌: {sign}{change:,.2f} ({sign}{pct_change:.2f}%)")
-    print(f"  市值: {mcap/1e9:,.1f}B | 市盈率: {pe}")
+
+    print(f"[Market Summary]")
+    print(f"  Current Price: {current:,.2f} {info.get('currency', '')}")
+    print(f"  Change:        {sign}{change:,.2f} ({sign}{pct_change:.2f}%)")
+    print(f"  Market Cap:    {mcap_str}  |  P/E: {pe}")
     print()
-    
-    print(f"[技术信号]")
-    rsi_status = '超买' if rsi_val > 70 else ('超卖' if rsi_val < 30 else '中性')
-    bb_status = '上轨' if bb_pos > 80 else ('下轨' if bb_pos < 20 else '中轨')
-    macd_status = '多头' if macd_val > macd_sig else '空头'
-    
-    print(f"  RSI(14): {rsi_val:.1f} ({rsi_status})")
-    print(f"  布林带位置: {bb_pos:.1f}% ({bb_status}附近)")
-    print(f"  MACD: {macd_val:.2f} | 信号: {macd_sig:.2f} ({macd_status})")
+
+    print(f"[Technical Signals]")
+    rsi_status = 'Overbought' if rsi_val > 70 else ('Oversold' if rsi_val < 30 else 'Neutral')
+    bb_status = 'Near upper band' if bb_pos > 80 else ('Near lower band' if bb_pos < 20 else 'Near middle band')
+    macd_status = 'Bullish' if macd_val > macd_sig else 'Bearish'
+
+    print(f"  RSI(14):          {rsi_val:.1f} ({rsi_status})")
+    print(f"  Bollinger Bands:  {bb_pos:.1f}% ({bb_status})")
+    print(f"  MACD:             {macd_val:.2f}  Signal: {macd_sig:.2f} ({macd_status})")
     print(f"\n{'='*60}\n")
 
 def main():
     if len(sys.argv) < 2: sys.exit(1)
-    
+
     import argparse
     parser = argparse.ArgumentParser(description="Stock Info Explorer")
     parser.add_argument("cmd", choices=["price", "fundamentals", "history", "pro", "chart", "report"], nargs='?', default="price")
@@ -291,19 +286,19 @@ def main():
     parser.add_argument("--bb", action="store_true")
     parser.add_argument("--vwap", action="store_true")
     parser.add_argument("--atr", action="store_true")
-    
+
     # Backward compatibility for positional args or simple 'yf.py TSLA'
     args_list = sys.argv[1:]
     if len(args_list) > 0 and args_list[0] not in ["price", "fundamentals", "history", "pro", "chart", "report"]:
         args_list.insert(0, "price")
-    
+
     args = parser.parse_args(args_list)
-    
+
     cmd = args.cmd
     symbol = args.symbol
     period = args.period
     chart_type = args.chart_type
-    
+
     indicators = {
         'rsi': args.rsi,
         'macd': args.macd,
@@ -321,9 +316,7 @@ def main():
     elif cmd == "report": show_report(symbol, ticker, info, period=period)
     elif cmd == "pro":
         save_pro_chart(symbol, ticker, period=period, chart_type=chart_type, indicators=indicators)
-
     elif cmd == "chart":
-        # chart命令已改为文本模式，使用history或pro替代
         show_history(symbol, ticker, period=period)
     else:
         show_price(symbol, ticker, info)
