@@ -120,6 +120,46 @@ Agricultural Bank of China (601288.SS) - Deep Analysis Report
 [Investment Rating: ⭐⭐⭐⭐ Strong Buy]
 ```
 
+## Output Structure
+
+The analysis report includes:
+
+### 1. Real-time Market Overview
+- Current price, change %, volume
+- 52-week range, market cap, beta
+
+### 2. Value Investing Indicators
+- Valuation: P/E, P/B, PEG
+- Profitability: ROE, ROA, profit margin
+- Dividends: yield, payout ratio
+- **Value Score: /10**
+
+### 3. Technical Analysis
+- Moving Averages: MA5, MA20, MA60
+- Momentum: RSI(14)
+- Trend: MACD
+- Volatility: Bollinger Bands
+- Volume: VWAP analysis
+- **Technical Score: /10**
+
+### 4. Growth Indicators
+- Revenue growth (YoY)
+- Earnings growth (YoY)
+- Margin trends
+- **Growth Score: /10**
+
+### 5. Financial Health
+- Debt-to-equity ratio
+- Current ratio (liquidity)
+- Asset efficiency
+
+### 6. Comprehensive Investment Advice
+- **Overall Rating: /10**
+- Investment strategies (long-term hold / swing trade / short-term speculation)
+- Key price levels (support/resistance/targets)
+- Risk warnings
+- Valuation targets
+
 ## When to Use This Skill
 
 - User requests "deep analysis", "complete analysis", "comprehensive report"
@@ -151,8 +191,16 @@ When a user requests stock analysis:
 Python packages (auto-installed by uv): `yfinance`, `pandas`, `numpy`  
 No API key required — uses Yahoo Finance public data.
 
+## Notes
+
+- On Windows: always prefix commands with `$env:PYTHONIOENCODING='utf-8';` to avoid encoding issues with A-share output
+- Use English variable names in Python scripts
+- Data source: Yahoo Finance via yfinance — no API key required
+- Analysis period affects technical indicators accuracy
+
 ## Limitations
 
 - Yahoo Finance data quality varies by market (US data is highest quality)
 - Some metrics may be N/A for loss-making or newly listed companies
 - Real-time quotes may have up to 15-min delay for US markets
+- Historical data limited for newly listed stocks
