@@ -127,6 +127,25 @@ Agricultural Bank of China (601288.SS) - Deep Analysis Report
 - User needs actionable trading strategies with specific price levels
 - User asks for investment recommendations with risk assessment
 
+## Workflow
+
+When a user requests stock analysis:
+
+1. **Resolve the stock name to a ticker**
+   - If the user provides a ticker directly (`AAPL`, `600519.SS`) → use as-is
+   - If the user provides a company name (English or Chinese, e.g. "Apple", "苹果", "贵州茅台", "英伟达") → use `web_search` to find the correct ticker symbol
+   - Search query example: `"Apple Inc stock ticker symbol"` or `"贵州茅台 stock ticker Yahoo Finance"`
+
+2. **Run analysis**
+   ```bash
+   uv run --script scripts/deep_analyze.py <ticker>
+   ```
+
+3. **Interpret and present results**
+   - Highlight the overall rating and investment recommendation
+   - Emphasize key risks and specific price levels
+   - Keep the full formatted report intact — do not reformat or summarize
+
 ## Requirements
 
 Python packages (auto-installed by uv): `yfinance`, `pandas`, `numpy`  
