@@ -108,14 +108,22 @@ def show_fundamentals(symbol, ticker, info):
     table = Table(title=f"Fundamentals: {info.get('longName', symbol)}")
     table.add_column("Metric", style="cyan")
     table.add_column("Value", style="magenta")
+    mcap = info.get('marketCap')
+    if mcap:
+        mcap_str = f"{mcap/1e12:.2f}T" if mcap >= 1e12 else (f"{mcap/1e9:.1f}B" if mcap >= 1e9 else f"{mcap/1e6:.0f}M")
+    else:
+        mcap_str = "N/A"
+    pe = info.get('forwardPE')
+    eps = info.get('trailingEps')
+    roe = info.get('returnOnEquity')
     metrics = [
-        ("Market Cap", info.get('marketCap')),
-        ("PE Ratio", info.get('forwardPE')),
-        ("EPS", info.get('trailingEps')),
-        ("ROE", info.get('returnOnEquity')),
+        ("Market Cap", mcap_str),
+        ("PE Ratio",   f"{pe:.2f}" if pe else "N/A"),
+        ("EPS",        f"{eps:.2f}" if eps else "N/A"),
+        ("ROE",        f"{roe*100:.2f}%" if roe else "N/A"),
     ]
     for name, val in metrics:
-        table.add_row(name, str(val))
+        table.add_row(name, val)
     console.print(table)
 
 def show_history(symbol, ticker, period="1mo"):
