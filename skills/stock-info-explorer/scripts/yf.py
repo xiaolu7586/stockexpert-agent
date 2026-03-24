@@ -262,7 +262,8 @@ def show_report(symbol, ticker, info, period="6mo"):
     print(f"[Market Summary]")
     print(f"  Current Price: {current:,.2f} {info.get('currency', '')}")
     print(f"  Change:        {sign}{change:,.2f} ({sign}{pct_change:.2f}%)")
-    print(f"  Market Cap:    {mcap_str}  |  P/E: {pe}")
+    pe_str = f"{pe:.2f}" if isinstance(pe, float) else str(pe)
+    print(f"  Market Cap:    {mcap_str}  |  P/E: {pe_str}")
     print()
 
     print(f"[Technical Signals]")
