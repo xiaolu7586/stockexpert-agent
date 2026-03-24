@@ -246,12 +246,28 @@ $env:PYTHONIOENCODING='utf-8'; uv run --script skills/stock-announcement-fetcher
 
 ---
 
+## 🔧 Platform Capabilities Required
+
+The following platform-level features exist in EasyClaw but are not yet implemented in ClawDI. Implementing them will significantly improve this agent's output quality.
+
+| Capability | What it does |
+|---|---|
+| **Skill scanning mandate** | Forces the agent to fully load SKILL.md and all reference files before every reply — required for structured trading-coach output (tables, star ratings, 10-dimension insights) |
+| **Reply formatting rules** | Injects output structure directives (section headers, tables, file-send via `MEDIA:`, silent mode via `NO_REPLY`) — the primary reason EasyClaw produces richer reports than plain text |
+| **Workspace file auto-load** | Automatically injects SOUL.md, IDENTITY.md, USER.md into session context at startup |
+| **Runtime metadata injection** | Provides current datetime/timezone, model name, OS, and channel type (webchat/API/etc.) to the agent each session |
+| **Safety rules** | Injects human-oversight and no-self-preservation constraints at the platform level |
+
 ## 📁 Directory Structure
 
 ```
 stockexpert-agent/
 ├── agent.json                                        # Agent config template
 ├── AGENTS.md                                         # Agent system instructions
+├── SOUL.md                                           # Agent behavioral philosophy
+├── IDENTITY.md                                       # Agent name, vibe, avatar
+├── USER.md                                           # User profile (filled at runtime)
+├── HEARTBEAT.md                                      # Periodic task config
 ├── TOOLS.md                                          # Runtime environment reference
 └── skills/
     ├── stock-deep-analyzer/                          # ⭐ Primary skill
